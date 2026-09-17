@@ -277,8 +277,8 @@ alter table muestra_notas
   add constraint muestra_notas_acceso_fk
   foreign key (acceso_id) references muestra_accesos(id) on delete set null;
 
--- Acceso inicial de prueba: usuario 'profesor', contraseña 'profesor-aami'.
--- El hash se genera con bcrypt desde el seed de la app.
+-- Acceso inicial de prueba: usuario 'profesor'. El hash se genera con
+-- bcrypt desde scripts/seed.js, con la contraseña por variable de entorno.
 
 
 -- ------------------------------------------------------------

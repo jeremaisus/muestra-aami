@@ -123,8 +123,9 @@ el 30 de octubre"), para que nadie descubra por prueba y error que no puede edit
 
 ### Autenticación
 - **Usuario + contraseña.** Los dos los crea y asigna administración. Sin autoregistro.
-- Acceso de prueba `profesor` / `profesor-aami`: desactivado, ya hay accesos
-  reales (`profe1`..`profe7`, ver `scripts/seed-produccion.js`).
+- Acceso de prueba `profesor` (creado por `scripts/seed.js`, contraseña por
+  variable de entorno): desactivado, ya hay accesos reales (`profe1`..
+  `profe7`, ver `scripts/seed-produccion.js`).
 - `debe_cambiar = true` fuerza el cambio de contraseña en el primer ingreso.
 - Hash con bcrypt. Nunca en texto plano.
 - Sesión en JWT dentro de cookie httpOnly. Sin expiración corta: los profesores
@@ -339,9 +340,13 @@ Pegar esto tal cual antes de generar el primer componente:
 ## Pendiente de datos
 
 - Nombres reales de los 7 profesores: los accesos ya existen
-  (`profe1`..`profe7`, contraseña provisoria `aami2026`, `debe_cambiar =
-  true`) vinculados 1 a 1 con "Profesor 1".."Profesor 7" — falta
-  renombrarlos desde `profesores.html` cuando estén los nombres reales.
+  (`profe1`..`profe7`, `debe_cambiar = true`) vinculados 1 a 1 con
+  "Profesor 1".."Profesor 7" — falta renombrarlos desde `profesores.html`
+  cuando estén los nombres reales. Los accesos se crean/resetean con
+  `scripts/seed-produccion.js`, que lee la contraseña provisoria de una
+  variable de entorno (`SEED_PASSWORD_PROFESORES`) y la hashea antes de
+  guardarla — nunca queda en texto plano en el repo. La contraseña vigente
+  se distribuye por fuera del repo (no en este archivo).
 - Fechas de las tres muestras
 - Listado de alumnos (CSV o transcripción de los papeles) — ya hay carga
   real en curso en la muestra Niños (Dario, Ruben, la canción "La Vida").
