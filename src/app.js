@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 
@@ -12,6 +13,8 @@ app.use(cookieParser());
 app.use(auth);
 
 app.use('/api', routes);
+
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 app.use(errorHandler);
 

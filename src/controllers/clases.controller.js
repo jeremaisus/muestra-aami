@@ -1,8 +1,9 @@
 const supabase = require('../config/supabase');
 const { manejarErrorPg } = require('../utils/pgErrors');
+const { idsClasesPorMuestra } = require('../services/clasesPorMuestra.service');
 
 const SELECT =
-  '*, profesor:muestra_profesores(id, nombre), clase_alumnos:muestra_clase_alumnos(alumno:muestra_alumnos(id, persona:muestra_personas(id, nombre), instrumento:muestra_instrumentos(id, nombre, color)))';
+  '*, profesor:muestra_profesores(id, nombre), clase_alumnos:muestra_clase_alumnos(alumno:muestra_alumnos(id, persona:muestra_personas(id, nombre, show_id), instrumento:muestra_instrumentos(id, nombre, color)))';
 
 function serialize(c) {
   return {
@@ -17,7 +18,9 @@ function serialize(c) {
       .filter(Boolean)
       .map((a) => ({
         id: a.id,
-        persona: a.persona ? { id: a.persona.id, nombre: a.persona.nombre } : undefined,
+        persona: a.persona
+          ? { id: a.persona.id, nombre: a.persona.nombre, muestraId: a.persona.show_id }
+          : undefined,
         instrumento: a.instrumento
           ? { id: a.instrumento.id, nombre: a.instrumento.nombre, color: a.instrumento.color }
           : undefined,
@@ -33,9 +36,16 @@ function esDuenio(req, profesorId) {
 
 async function listar(req, res, next) {
   try {
+    let claseIdsFiltro;
+    if (req.query.showId) {
+      claseIdsFiltro = await idsClasesPorMuestra(req.query.showId);
+      if (claseIdsFiltro.length === 0) return res.json({ clases: [] });
+    }
+
     let query = supabase.from('muestra_clases').select(SELECT).order('dia').order('hora_inicio');
     if (req.query.profesorId) query = query.eq('profesor_id', req.query.profesorId);
     if (req.query.dia) query = query.eq('dia', Number(req.query.dia));
+    if (claseIdsFiltro) query = query.in('id', claseIdsFiltro);
 
     const { data, error } = await query;
     if (error) return next(error);

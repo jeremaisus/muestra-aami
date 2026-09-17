@@ -1,0 +1,65 @@
+.alumnos__filtros {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.alumnos__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 14px;
+  min-height: var(--touch-min);
+}
+
+.alumnos__contador {
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.alumno-fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) 0 var(--space-2) var(--space-2);
+  border-left: var(--bar-width) solid var(--instrumento-color, var(--color-line));
+  border-bottom: 1px solid var(--color-line);
+}
+
+.alumno-fila__nombre {
+  font-family: var(--font-condensed);
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.alumno-fila__meta {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.alumno-fila__sin-cancion {
+  font-family: var(--font-base);
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid var(--color-text-secondary);
+  color: var(--color-text-secondary);
+  border-radius: var(--radius);
+  padding: 1px 6px;
+  margin-left: var(--space-2);
+}
+
+.alumno-fila__borrar {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  font-size: 13px;
+  cursor: pointer;
+  flex-shrink: 0;
+}

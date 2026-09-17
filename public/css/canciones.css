@@ -1,0 +1,118 @@
+.topbar__drive {
+  flex-shrink: 0;
+  min-height: var(--touch-min);
+  display: flex;
+  align-items: center;
+  font-family: var(--font-base);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+}
+
+.alta-cancion {
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.alta-cancion__fila {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: flex-end;
+}
+
+.alta-cancion__campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.alta-cancion__campo label {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.alta-cancion__campo input {
+  min-height: var(--touch-min);
+  padding: 0 var(--space-2);
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  font-family: var(--font-base);
+  font-size: 15px;
+}
+
+.alta-cancion__campo--titulo {
+  flex: 1 1 200px;
+}
+
+.alta-cancion__campo--artista,
+.alta-cancion__campo--tonalidad {
+  flex: 1 1 120px;
+}
+
+.alta-cancion button {
+  min-height: var(--touch-min);
+  padding: 0 var(--space-4);
+  background: var(--color-text);
+  color: var(--color-surface);
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.alta-cancion button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.alta-cancion__aviso {
+  margin: var(--space-2) 0 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.catalogo {
+  display: flex;
+  flex-direction: column;
+}
+
+.catalogo__fila {
+  display: block;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-line);
+  text-decoration: none;
+  color: var(--color-text);
+}
+
+.catalogo__titulo {
+  font-family: var(--font-condensed);
+  font-weight: 500;
+  font-size: 18px;
+}
+
+.catalogo__meta {
+  display: flex;
+  gap: var(--space-3);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
+
+.catalogo__estado--completa {
+  color: var(--color-estado-completa);
+  font-weight: 500;
+}
+
+.catalogo__estado--incompleta {
+  color: var(--color-estado-incompleta);
+  font-weight: 500;
+}
+
+.catalogo__vacio {
+  padding: var(--space-6) var(--space-4);
+  color: var(--color-text-secondary);
+}

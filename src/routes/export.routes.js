@@ -1,7 +1,10 @@
 const express = require('express');
+const requireAuth = require('../middleware/requireAuth');
+const { programa, grilla } = require('../controllers/export.controller');
 
 const router = express.Router();
 
-// TODO: endpoints de export
+router.get('/programa', requireAuth, programa);
+router.get('/grilla', requireAuth, grilla);
 
 module.exports = router;

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Faltantes — Muestra AAMI</title>
+  <link rel="stylesheet" href="/css/tokens.css" />
+  <link rel="stylesheet" href="/css/nav.css" />
+  <link rel="stylesheet" href="/css/grilla.css" />
+  <link rel="stylesheet" href="/css/dashboard.css" />
+</head>
+<body>
+  <div id="navPrincipal"></div>
+
+  <header class="topbar">
+    <div class="topbar__muestras" id="muestras" role="tablist" aria-label="Muestra"></div>
+  </header>
+
+  <p class="estado-carga" id="estadoCarga" hidden></p>
+
+  <main>
+    <section class="seccion">
+      <h1 class="seccion__titulo">
+        Instrumentos que faltan <span class="seccion__contador" id="contadorFaltantes"></span>
+      </h1>
+      <div id="listaFaltantes"></div>
+    </section>
+
+    <section class="seccion">
+      <h2 class="seccion__titulo">
+        Alumnos sin canción asignada <span class="seccion__contador" id="contadorSinAsignar"></span>
+      </h2>
+      <div id="listaSinAsignar"></div>
+    </section>
+  </main>
+
+  <script src="/js/auth.js"></script>
+  <script src="/js/nav.js"></script>
+  <script src="/js/muestra.js"></script>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,435 @@
+.ficha {
+  padding: var(--space-4);
+}
+
+.ficha__volver {
+  display: inline-block;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  margin-bottom: var(--space-4);
+}
+
+.ficha__encabezado {
+  margin-bottom: var(--space-4);
+}
+
+.ficha__titulo {
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: 28px;
+  margin: 0;
+}
+
+.ficha__artista {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  margin: var(--space-1) 0 0;
+}
+
+.ficha__estado {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.ficha__estado button {
+  min-height: var(--touch-min);
+  padding: 0 var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  font-family: var(--font-condensed);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.ficha__estado button[aria-pressed="true"][data-estado="completa"] {
+  border-color: var(--color-estado-completa);
+  color: var(--color-estado-completa);
+}
+
+.ficha__estado button[aria-pressed="true"][data-estado="incompleta"] {
+  border-color: var(--color-estado-incompleta);
+  color: var(--color-estado-incompleta);
+}
+
+.ficha__estado-texto {
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: var(--space-3);
+}
+
+.ficha__estado-texto--completa {
+  color: var(--color-estado-completa);
+}
+
+.ficha__estado-texto--incompleta {
+  color: var(--color-estado-incompleta);
+}
+
+.ficha__meta {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--color-line);
+  border-bottom: 1px solid var(--color-line);
+  margin-bottom: var(--space-4);
+}
+
+.ficha__meta-fila {
+  display: flex;
+  gap: var(--space-2);
+  font-size: 15px;
+}
+
+.ficha__meta-fila dt {
+  color: var(--color-text-secondary);
+  min-width: 110px;
+}
+
+.ficha__meta-fila dd {
+  margin: 0;
+}
+
+.ficha__meta button {
+  align-self: flex-start;
+  min-height: var(--touch-min);
+  padding: 0 var(--space-2);
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.ficha__meta-form {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.ficha__meta-form label {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.ficha__meta-form input,
+.ficha__meta-form textarea {
+  width: 100%;
+  padding: var(--space-2);
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  font-family: var(--font-base);
+  font-size: 15px;
+}
+
+.ficha__meta-form textarea {
+  min-height: 72px;
+  resize: vertical;
+}
+
+.ficha__meta-form-acciones {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.ficha__meta-form-acciones button {
+  min-height: var(--touch-min);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius);
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.ficha__meta-form-acciones button[type="submit"] {
+  background: var(--color-text);
+  color: var(--color-surface);
+  border: none;
+}
+
+.ficha__meta-form-acciones button[type="button"] {
+  background: none;
+  border: 1px solid var(--color-line);
+  color: var(--color-text);
+}
+
+.ficha__links {
+  margin-bottom: var(--space-6);
+}
+
+.ficha__seccion-titulo {
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: 16px;
+  margin: 0 0 var(--space-2);
+}
+
+.links__lista {
+  display: grid;
+  gap: var(--space-1);
+  margin-bottom: var(--space-2);
+}
+
+.links__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) 0;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.links__item a {
+  font-size: 15px;
+  text-decoration: underline;
+  flex: 1;
+}
+
+.links__item span {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.links__item button {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.links__alta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.links__alta input {
+  min-height: var(--touch-min);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  font-size: 14px;
+  flex: 1 1 140px;
+}
+
+.links__alta button {
+  min-height: var(--touch-min);
+  padding: 0 var(--space-3);
+  background: var(--color-text);
+  color: var(--color-surface);
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ficha__cuerpo {
+  display: block;
+}
+
+.ficha__aviso-permiso {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-3);
+}
+
+.slots__instrumento {
+  margin-bottom: var(--space-4);
+}
+
+.slots__instrumento-nombre {
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: 15px;
+  margin: 0 0 var(--space-1);
+}
+
+.slot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) 0 var(--space-2) var(--space-2);
+  border-left: var(--bar-width) solid var(--instrumento-color, var(--color-line));
+  border-bottom: 1px solid var(--color-line);
+  flex-wrap: wrap;
+}
+
+.slot__info {
+  font-family: var(--font-condensed);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.slot__vacio {
+  color: var(--color-text-secondary);
+  font-weight: 400;
+}
+
+.slot__se-busca {
+  font-family: var(--font-base);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text);
+  border: 1px solid var(--color-text);
+  border-radius: var(--radius);
+  padding: 1px 6px;
+  margin-left: var(--space-2);
+}
+
+.slot__acciones {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.slot__acciones select,
+.slot__acciones button {
+  min-height: var(--touch-min);
+  font-size: 13px;
+}
+
+.slot__acciones select {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.slot__acciones button {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.slot__interes.slot__interes--activo {
+  color: var(--color-text);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.agregar-slot {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  margin-top: var(--space-2);
+}
+
+.agregar-slot select,
+.agregar-slot button {
+  min-height: var(--touch-min);
+}
+
+.agregar-slot select {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  padding: 0 var(--space-2);
+}
+
+.agregar-slot button {
+  padding: 0 var(--space-3);
+  background: var(--color-text);
+  color: var(--color-surface);
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.notas {
+  margin-top: var(--space-6);
+}
+
+.nota {
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.nota__cabecera {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 2px;
+}
+
+.nota__texto {
+  font-size: 15px;
+  white-space: pre-wrap;
+}
+
+.nota__acciones {
+  margin-top: var(--space-1);
+  display: flex;
+  gap: var(--space-2);
+}
+
+.nota__acciones button {
+  background: none;
+  border: none;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.nota-form {
+  margin-top: var(--space-3);
+  display: grid;
+  gap: var(--space-2);
+}
+
+.nota-form textarea {
+  min-height: 64px;
+  padding: var(--space-2);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  font-family: var(--font-base);
+  font-size: 15px;
+  resize: vertical;
+}
+
+.nota-form select {
+  min-height: var(--touch-min);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  font-size: 14px;
+}
+
+.nota-form button {
+  justify-self: start;
+  min-height: var(--touch-min);
+  padding: 0 var(--space-4);
+  background: var(--color-text);
+  color: var(--color-surface);
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .ficha__cuerpo {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  .notas {
+    margin-top: 0;
+    position: sticky;
+    top: var(--space-4);
+  }
+}

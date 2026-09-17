@@ -1,0 +1,294 @@
+.contexto {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-line);
+  background: var(--color-surface);
+}
+
+.contexto__campo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.contexto__campo label {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.contexto__campo select {
+  min-height: var(--touch-min);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  font-family: var(--font-condensed);
+  font-size: 15px;
+  background: var(--color-surface);
+}
+
+.cuerpo-carga {
+  display: block;
+  padding: var(--space-4);
+}
+
+.bloque-actual {
+  margin-bottom: var(--space-4);
+}
+
+.bloque-actual__titulo {
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: 18px;
+  margin: 0 0 var(--space-2);
+}
+
+.roster {
+  display: grid;
+  gap: var(--space-1);
+  margin-bottom: var(--space-3);
+}
+
+.roster__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) 0 var(--space-2) var(--space-2);
+  border-left: var(--bar-width) solid var(--instrumento-color, var(--color-line));
+  border-bottom: 1px solid var(--color-line);
+}
+
+.roster__item span {
+  font-family: var(--font-condensed);
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.roster__item button {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.roster__vacio {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  margin: 0 0 var(--space-3);
+}
+
+.form-alumno {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: flex-end;
+  margin-bottom: var(--space-3);
+}
+
+.form-alumno__campo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.form-alumno__campo label {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.form-alumno__campo input,
+.form-alumno__campo select {
+  min-height: var(--touch-min);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  font-family: var(--font-base);
+  font-size: 16px;
+}
+
+.form-alumno__campo--nombre {
+  flex: 1 1 160px;
+}
+
+.form-alumno button[type="submit"] {
+  min-height: var(--touch-min);
+  padding: 0 var(--space-4);
+  background: var(--color-text);
+  color: var(--color-surface);
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.roster__limite {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-3);
+}
+
+.duracion {
+  display: none;
+}
+
+.duracion--visible {
+  display: block;
+}
+
+.duracion__titulo {
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: 15px;
+  margin: 0 0 var(--space-2);
+}
+
+.duracion__botones {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.duracion__boton {
+  flex: 1;
+  min-height: 64px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.duracion__boton--sugerido {
+  border: 2px solid var(--color-text);
+}
+
+.duracion__otra {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.duracion__otra select {
+  min-height: var(--touch-min);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  font-size: 14px;
+}
+
+.duracion__otra button {
+  min-height: var(--touch-min);
+  padding: 0 var(--space-2);
+  background: none;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  font-size: 13px;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.estado-guardado {
+  min-height: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  margin: var(--space-2) 0 0;
+}
+
+.import-csv {
+  margin-top: var(--space-8);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-line);
+}
+
+.import-csv summary {
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  padding: var(--space-1) 0;
+}
+
+.import-csv textarea {
+  width: 100%;
+  min-height: 100px;
+  margin-top: var(--space-2);
+  padding: var(--space-2);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  font-family: monospace;
+  font-size: 13px;
+  resize: vertical;
+}
+
+.import-csv__nota {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin: var(--space-1) 0 var(--space-2);
+}
+
+.import-csv button {
+  min-height: var(--touch-min);
+  padding: 0 var(--space-3);
+  background: var(--color-text);
+  color: var(--color-surface);
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.import-csv table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: var(--space-3);
+  font-size: 13px;
+}
+
+.import-csv th {
+  text-align: left;
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  border-bottom: 1px solid var(--color-line);
+  padding: var(--space-1) var(--space-2) var(--space-1) 0;
+}
+
+.import-csv td {
+  padding: var(--space-1) var(--space-2) var(--space-1) 0;
+  border-bottom: 1px solid var(--color-line);
+  vertical-align: top;
+}
+
+.import-csv td.fila-error {
+  color: var(--color-estado-incompleta);
+}
+
+.import-csv__resumen {
+  margin-top: var(--space-2);
+  font-size: 14px;
+}
+
+@media (min-width: 900px) {
+  .cuerpo-carga {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  .import-csv {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+}

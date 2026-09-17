@@ -1,0 +1,271 @@
+/* ---------------------------------------------------------------
+   Grilla semanal — pantalla #2. Mobile-first: columna única
+   scrolleable por día. Desde 768px: tabla día × horario.
+   ---------------------------------------------------------------- */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-line);
+  padding: var(--space-2) var(--space-4);
+}
+
+.topbar__muestras {
+  display: flex;
+  gap: var(--space-4);
+  overflow-x: auto;
+}
+
+.topbar__exportar {
+  flex-shrink: 0;
+  min-height: var(--touch-min);
+  display: flex;
+  align-items: center;
+  font-family: var(--font-base);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+}
+
+.topbar__muestras button {
+  appearance: none;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: var(--space-2) 0;
+  min-height: var(--touch-min);
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.topbar__muestras button[aria-selected="true"] {
+  color: var(--color-text);
+  border-bottom-color: var(--color-text);
+}
+
+/* Selector de día: solo mobile, columna única. En desktop/iPad los días
+   ya son las columnas de la tabla, así que este filtro se oculta. */
+.dias {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-line);
+  padding: 0 var(--space-4);
+}
+
+.dias button {
+  appearance: none;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  min-width: var(--touch-min);
+  min-height: var(--touch-min);
+  font-family: var(--font-condensed);
+  font-weight: 500;
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.dias button[aria-selected="true"] {
+  color: var(--color-text);
+  border-bottom-color: var(--color-text);
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+}
+
+.filtros select {
+  min-height: var(--touch-min);
+  padding: 0 var(--space-2);
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  font-size: 14px;
+  color: var(--color-text);
+}
+
+.estado-carga {
+  margin: 0;
+  padding: 0 var(--space-4) var(--space-3);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+/* --- Mobile: columna única scrolleable ---------------------------- */
+
+.lista-mobile {
+  display: block;
+}
+
+.bloque {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.bloque__hora {
+  font-family: var(--font-condensed);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-1);
+}
+
+.bloque__alumno {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding-left: var(--space-2);
+  border-left: var(--bar-width) solid var(--instrumento-color, var(--color-line));
+  margin-bottom: var(--space-1);
+}
+
+.bloque__alumno-nombre {
+  font-family: var(--font-condensed);
+  font-weight: 500;
+  font-size: 17px;
+}
+
+.bloque__alumno-instrumento {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.bloque__profesor {
+  padding-left: calc(var(--bar-width) + var(--space-2));
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.lista-mobile__vacio {
+  padding: var(--space-6) var(--space-4);
+  color: var(--color-text-secondary);
+  font-size: 15px;
+}
+
+/* --- Desktop / iPad: tabla día × horario --------------------------- */
+
+.grilla-semana {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .dias {
+    display: none;
+  }
+
+  .lista-mobile {
+    display: none;
+  }
+
+  .grilla-semana {
+    display: block;
+    padding: 0 var(--space-4) var(--space-6);
+  }
+
+  .grilla-semana__encabezados {
+    display: grid;
+    grid-template-columns: 56px repeat(6, 1fr);
+    position: sticky;
+    top: 0;
+    background: var(--color-bg);
+    z-index: 1;
+  }
+
+  .grilla-semana__encabezados > span {
+    font-family: var(--font-condensed);
+    font-weight: 600;
+    font-size: 15px;
+    padding: var(--space-2) var(--space-2);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .grilla-semana__cuerpo {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    position: relative;
+  }
+
+  .grilla-semana__horas {
+    position: relative;
+  }
+
+  .grilla-semana__hora-marca {
+    position: absolute;
+    left: 0;
+    right: var(--space-2);
+    transform: translateY(-0.6em);
+    font-family: var(--font-condensed);
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    text-align: right;
+  }
+
+  .grilla-semana__dias {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    border-left: 1px solid var(--color-line);
+  }
+
+  .grilla-semana__dia-columna {
+    position: relative;
+    border-right: 1px solid var(--color-line);
+  }
+
+  .grilla-semana__linea-hora {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-top: 1px solid var(--color-line);
+  }
+
+  .clase-bloque {
+    position: absolute;
+    left: var(--space-1);
+    right: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    background: var(--color-surface);
+    overflow: hidden;
+  }
+
+  .clase-bloque__hora {
+    font-family: var(--font-condensed);
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    margin: 0 0 2px;
+  }
+
+  .clase-bloque__alumno {
+    padding-left: var(--space-2);
+    border-left: var(--bar-width) solid var(--instrumento-color, var(--color-line));
+    font-family: var(--font-condensed);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+  }
+
+  .clase-bloque__profesor {
+    padding-left: var(--space-2);
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

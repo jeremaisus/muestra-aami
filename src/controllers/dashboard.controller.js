@@ -1,6 +1,6 @@
 const supabase = require('../config/supabase');
 
-function serializeFaltante(f) {
+function serializeFaltante(f, extra) {
   return {
     cancionId: f.cancion_id,
     titulo: f.titulo,
@@ -9,6 +9,8 @@ function serializeFaltante(f) {
     instrumento: f.instrumento,
     numero: f.numero,
     slotId: f.slot_id,
+    seBusca: extra?.se_busca ?? false,
+    instrumentoColor: extra?.instrumento?.color ?? null,
   };
 }
 
@@ -31,6 +33,8 @@ async function resolverNombreShow(showId) {
   return data?.nombre || null;
 }
 
+// La vista no expone se_busca ni el color del instrumento (solo su nombre),
+// así que se completan con una segunda consulta a los slots reales.
 async function faltantes(req, res, next) {
   try {
     const nombreShow = await resolverNombreShow(req.query.showId);
@@ -40,7 +44,20 @@ async function faltantes(req, res, next) {
     const { data, error } = await query;
     if (error) return next(error);
 
-    res.json({ faltantes: data.map(serializeFaltante) });
+    if (data.length === 0) return res.json({ faltantes: [] });
+
+    const { data: slots, error: errorSlots } = await supabase
+      .from('muestra_slots')
+      .select('id, se_busca, instrumento:muestra_instrumentos(color)')
+      .in(
+        'id',
+        data.map((f) => f.slot_id)
+      );
+
+    if (errorSlots) return next(errorSlots);
+
+    const porSlotId = new Map(slots.map((s) => [s.id, s]));
+    res.json({ faltantes: data.map((f) => serializeFaltante(f, porSlotId.get(f.slot_id))) });
   } catch (err) {
     next(err);
   }

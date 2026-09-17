@@ -95,6 +95,23 @@ async function actualizar(req, res, next) {
       if (camposNoPermitidos.length > 0) {
         return res.status(403).json({ error: 'Los profesores solo pueden asignar/quitar alumnos en un slot' });
       }
+
+      // Un profesor solo puede ocupar un slot vacío. Reasignar o quitar un
+      // slot ya ocupado (por cualquiera) queda exclusivo de administración,
+      // más allá del interruptor profes_pueden_ocupar_slots.
+      if (body.alumnoId !== undefined) {
+        const { data: actual, error: errorActual } = await supabase
+          .from('muestra_slots')
+          .select('alumno_id, profesor_id')
+          .eq('id', id)
+          .maybeSingle();
+
+        if (errorActual) return next(errorActual);
+        if (!actual) return res.status(404).json({ error: 'Slot no encontrado' });
+        if (actual.alumno_id || actual.profesor_id) {
+          return res.status(403).json({ error: 'Ese slot ya está ocupado: solo administración puede reasignarlo o vaciarlo' });
+        }
+      }
     }
 
     if (body.alumnoId && body.profesorId) {

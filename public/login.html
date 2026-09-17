@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Ingresar — Muestra AAMI</title>
+  <link rel="stylesheet" href="/css/tokens.css" />
+  <link rel="stylesheet" href="/css/auth.css" />
+</head>
+<body>
+  <main class="auth">
+    <h1>Muestra AAMI</h1>
+    <form id="formLogin">
+      <p class="auth__error" id="error" hidden></p>
+      <div class="auth__campo">
+        <label for="usuario">Usuario</label>
+        <input type="text" id="usuario" name="usuario" autocomplete="username" required autofocus />
+      </div>
+      <div class="auth__campo">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" name="password" autocomplete="current-password" required />
+      </div>
+      <button type="submit" id="botonEntrar">Entrar</button>
+    </form>
+  </main>
+
+  <script src="/js/auth.js"></script>
+  <script src="/js/login.js"></script>
+</body>
+</html>

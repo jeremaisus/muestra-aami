@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Carga rápida — Muestra AAMI</title>
+  <link rel="stylesheet" href="/css/tokens.css" />
+  <link rel="stylesheet" href="/css/nav.css" />
+  <link rel="stylesheet" href="/css/grilla.css" />
+  <link rel="stylesheet" href="/css/carga-rapida.css" />
+</head>
+<body>
+  <div id="navPrincipal"></div>
+
+  <header class="topbar">
+    <div class="topbar__muestras" id="muestras" role="tablist" aria-label="Muestra"></div>
+  </header>
+
+  <div class="dias" id="dias" role="tablist" aria-label="Día"></div>
+
+  <div class="contexto">
+    <div class="contexto__campo">
+      <label for="selectProfesor">Profesor</label>
+      <select id="selectProfesor"></select>
+    </div>
+  </div>
+
+  <p class="estado-carga" id="estadoCarga" hidden></p>
+
+  <div class="cuerpo-carga" id="cuerpo" hidden>
+    <section class="bloque-actual">
+      <h1 class="bloque-actual__titulo" id="tituloBloque">Bloque nuevo</h1>
+
+      <div class="roster" id="roster"></div>
+      <p class="roster__vacio" id="rosterVacio">Todavía no agregaste alumnos a este bloque.</p>
+      <p class="roster__limite" id="rosterLimite" hidden>
+        Este bloque ya tiene 3 alumnos (el máximo sugerido). Guardalo con la duración y arrancá el siguiente.
+      </p>
+
+      <form class="form-alumno" id="formAlumno" autocomplete="off">
+        <div class="form-alumno__campo form-alumno__campo--nombre">
+          <label for="nombreAlumno">Nombre</label>
+          <input type="text" id="nombreAlumno" list="personasExistentes" required />
+          <datalist id="personasExistentes"></datalist>
+        </div>
+        <div class="form-alumno__campo">
+          <label for="instrumentoAlumno">Instrumento</label>
+          <select id="instrumentoAlumno"></select>
+        </div>
+        <div class="form-alumno__campo" id="campoHoraInicio">
+          <label for="horaInicioBloque">Hora de inicio</label>
+          <input type="time" id="horaInicioBloque" min="14:00" max="21:30" step="900" required />
+        </div>
+        <button type="submit">Agregar alumno</button>
+      </form>
+
+      <div class="duracion" id="duracion">
+        <p class="duracion__titulo">Duración del bloque</p>
+        <div class="duracion__botones">
+          <button type="button" class="duracion__boton" id="boton60">1 hora</button>
+          <button type="button" class="duracion__boton" id="boton75">1 h 15</button>
+        </div>
+        <div class="duracion__otra">
+          <label for="otraDuracion">Otra duración</label>
+          <select id="otraDuracion"></select>
+          <button type="button" id="botonOtraDuracion">Usar esta duración</button>
+        </div>
+        <p class="estado-guardado" id="estadoGuardado"></p>
+      </div>
+    </section>
+
+    <details class="import-csv" id="importCsv">
+      <summary>Importar CSV / Excel (pegar listado)</summary>
+      <p class="import-csv__nota">
+        Columnas requeridas: <strong>nombre, instrumento, profesor</strong> (nombres del catálogo, no ids).
+        Solo carga alumnos, no arma horarios.
+      </p>
+      <textarea id="csvTexto" placeholder="nombre,instrumento,profesor&#10;Renata,Piano,Jeremías"></textarea>
+      <button type="button" id="botonPreview">Previsualizar</button>
+      <div id="previewCsv"></div>
+    </details>
+  </div>
+
+  <script src="/js/auth.js"></script>
+  <script src="/js/nav.js"></script>
+  <script src="/js/muestra.js"></script>
+  <script src="/js/carga-rapida.js"></script>
+</body>
+</html>

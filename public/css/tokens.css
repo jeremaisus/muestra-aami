@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600&family=Barlow:wght@400;500&display=swap');
+
+:root {
+  /* Color: papel de fotocopia, frío y claro. */
+  --color-bg: #F2F3F1;
+  --color-surface: #FFFFFF;
+  --color-text: #1C1E1D;
+  --color-text-secondary: #8A908C;
+  --color-line: #DDE0DD;
+
+  /* Reservados en exclusiva para estado de banda. No usar en ningún otro lugar. */
+  --color-estado-incompleta: #D98324;
+  --color-estado-completa: #3F8F5C;
+
+  --font-condensed: 'Barlow Condensed', sans-serif;
+  --font-base: 'Barlow', sans-serif;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  --touch-min: 44px;
+  --bar-width: 3px;
+  --radius: 2px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Varios componentes fijan `display` en su propia clase (p. ej. flex para
+   alinear íconos y texto). Sin esto, esa regla le gana en cascada al
+   atributo `hidden` y el elemento queda visible igual. */
+[hidden] {
+  display: none !important;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-base);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+select {
+  font-family: inherit;
+  color: inherit;
+}
+
+a {
+  color: inherit;
+}

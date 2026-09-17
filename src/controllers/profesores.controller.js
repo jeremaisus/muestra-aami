@@ -75,4 +75,36 @@ async function actualizar(req, res, next) {
   }
 }
 
-module.exports = { listar, crear, actualizar };
+// muestra_clases.profesor_id es on delete cascade: borrar sin este chequeo
+// se llevaría puesto el historial de horarios del profesor en silencio.
+async function eliminar(req, res, next) {
+  try {
+    const { id } = req.params;
+
+    const { count: clasesCount, error: errorClases } = await supabase
+      .from('muestra_clases')
+      .select('id', { count: 'exact', head: true })
+      .eq('profesor_id', id);
+
+    if (errorClases) return next(errorClases);
+    if (clasesCount > 0) {
+      return res.status(409).json({
+        error: 'No se puede borrar: el profesor tiene clases cargadas. Desactivalo en su lugar.',
+      });
+    }
+
+    const { error, count } = await supabase
+      .from('muestra_profesores')
+      .delete({ count: 'exact' })
+      .eq('id', id);
+
+    if (error) return manejarErrorPg(error, next);
+    if (!count) return res.status(404).json({ error: 'Profesor no encontrado' });
+
+    res.status(204).end();
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { listar, crear, actualizar, eliminar };

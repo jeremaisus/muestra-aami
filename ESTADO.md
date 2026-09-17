@@ -123,7 +123,8 @@ el 30 de octubre"), para que nadie descubra por prueba y error que no puede edit
 
 ### Autenticación
 - **Usuario + contraseña.** Los dos los crea y asigna administración. Sin autoregistro.
-- Acceso inicial de prueba: usuario `profesor`, contraseña `profesor-aami`.
+- Acceso de prueba `profesor` / `profesor-aami`: desactivado, ya hay accesos
+  reales (`profe1`..`profe7`, ver `scripts/seed-produccion.js`).
 - `debe_cambiar = true` fuerza el cambio de contraseña en el primer ingreso.
 - Hash con bcrypt. Nunca en texto plano.
 - Sesión en JWT dentro de cookie httpOnly. Sin expiración corta: los profesores
@@ -255,13 +256,42 @@ Pegar esto tal cual antes de generar el primer componente:
 - [x] Endpoints CRUD (auth, config, shows, instrumentos, profesores,
       personas, alumnos + importar CSV, clases, canciones + links +
       check-duplicado, slots + interés, notas, dashboard, programa, accesos).
-      Pendiente: `log` (queda como placeholder, no hace falta todavía);
-      exportación PDF, explícitamente pospuesta.
-- [ ] Pantalla de carga rápida de alumnos
-- [ ] Grilla semanal
-- [ ] Detalle de canción + notas
-- [ ] Dashboard de faltantes
-- [ ] Orden de programa + exportación PDF
+      Pendiente: `log` (queda como placeholder, no hace falta todavía).
+- [x] DELETE de profesores (solo si no tiene clases cargadas; si las tiene,
+      409 y hay que desactivarlo en su lugar).
+- [x] Login real (`login.html`) + cambio de contraseña forzado
+      (`cambiar-password.html`) para `debe_cambiar = true`. Shell compartido
+      (`auth.js`, `nav.js`, `muestra.js`) en todas las pantallas protegidas.
+- [x] Carga rápida de alumnos (`carga-rapida.html`): profesor + día fijos
+      arriba, formulario nombre → instrumento → hora de inicio para el
+      primer alumno del bloque, se van sumando alumnos (autocompletado por
+      nombre existente, reutiliza persona/alumno si ya existe), duración
+      1h/1h15 sugerida según cantidad y guarda el bloque; el foco vuelve al
+      nombre y la hora de inicio del próximo bloque se autocompleta con el
+      fin del anterior. Import CSV/Excel al costado (preview + confirmación
+      manual). Alumnos (`alumnos.html`): catálogo con filtro "sin canción
+      asignada" y contador "Faltan N de M".
+- [x] Grilla semanal (mobile: columna única por día · iPad/desktop: tabla
+      día × horario 14:00–21:30, con barra de color por alumno dentro de
+      cada bloque). Filtros por muestra, profesor e instrumento. Link de
+      exportación a PDF.
+- [x] Canciones: catálogo por muestra con alta + aviso de duplicado
+      (`canciones.html`) y ficha de detalle (`cancion.html`) con tonalidad,
+      observaciones, links de Drive, slots de la banda (con aviso de
+      instrumento repetido, asignación de alumno/profesor, `se_busca`,
+      toggle de interés para profesores) y panel de notas embebido (según
+      ESTADO.md, no como pantalla aparte). Un profesor solo puede ocupar un
+      slot vacío; reasignar o vaciar un slot ya ocupado es exclusivo de
+      administración (ver `PATCH /api/slots/:id`).
+- [x] Dashboard de faltantes (`dashboard.html`): instrumentos que faltan por
+      canción (con `se_busca` y color de instrumento) + alumnos sin canción
+      asignada.
+- [x] Orden de programa (`programa.html`): reordenar con botones
+      Subir/Bajar (se eligió esto en vez de drag-and-drop, más simple y
+      confiable en touch sin sumar una librería) + link de exportación.
+- [x] Exportación a PDF (`GET /api/export/programa`, `GET /api/export/grilla`,
+      ambos `?showId=`), con `pdfkit`. Diseño funcional en Helvetica, no
+      replica la tipografía Barlow de la interfaz (ver resumen de la sesión).
 - [ ] Deploy a Hostinger
 
 ## Pendiente de datos

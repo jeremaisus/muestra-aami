@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Canción — Muestra AAMI</title>
+  <link rel="stylesheet" href="/css/tokens.css" />
+  <link rel="stylesheet" href="/css/nav.css" />
+  <link rel="stylesheet" href="/css/cancion.css" />
+</head>
+<body>
+  <div id="navPrincipal"></div>
+
+  <div class="ficha">
+    <a class="ficha__volver" href="/canciones.html">Volver a canciones</a>
+
+    <p class="estado-carga" id="estadoCarga" hidden></p>
+
+    <div id="contenido" hidden>
+      <header class="ficha__encabezado">
+        <h1 class="ficha__titulo" id="titulo"></h1>
+        <p class="ficha__artista" id="artista"></p>
+
+        <div class="ficha__estado" id="estadoBotones" hidden>
+          <button type="button" data-estado="incompleta">Incompleta</button>
+          <button type="button" data-estado="completa">Completa</button>
+        </div>
+        <p class="ficha__estado-texto" id="estadoTexto" hidden></p>
+      </header>
+
+      <section class="ficha__meta" id="metaSeccion">
+        <dl id="metaLectura">
+          <div class="ficha__meta-fila">
+            <dt>Tonalidad</dt>
+            <dd id="metaTonalidad"></dd>
+          </div>
+          <div class="ficha__meta-fila">
+            <dt>Observaciones</dt>
+            <dd id="metaObservaciones"></dd>
+          </div>
+        </dl>
+        <button type="button" id="botonEditarMeta" hidden>Editar tonalidad y observaciones</button>
+
+        <form class="ficha__meta-form" id="formMeta" hidden>
+          <label for="inputTonalidad">Tonalidad</label>
+          <input type="text" id="inputTonalidad" />
+          <label for="inputObservaciones">Observaciones (recortes, cambios de arreglo)</label>
+          <textarea id="inputObservaciones"></textarea>
+          <div class="ficha__meta-form-acciones">
+            <button type="submit">Guardar</button>
+            <button type="button" id="botonCancelarMeta">Cancelar</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="ficha__links">
+        <h2 class="ficha__seccion-titulo">Links de Drive</h2>
+        <div class="links__lista" id="listaLinks"></div>
+        <form class="links__alta" id="formLink" hidden>
+          <input type="text" id="linkEtiqueta" placeholder="Etiqueta (ej. pista, partitura)" required />
+          <input type="url" id="linkUrl" placeholder="https://drive.google.com/…" required />
+          <button type="submit">Agregar link</button>
+        </form>
+      </section>
+
+      <div class="ficha__cuerpo">
+        <section class="ficha__slots">
+          <h2 class="ficha__seccion-titulo">Banda</h2>
+          <p class="ficha__aviso-permiso" id="avisoPermiso" hidden></p>
+          <div id="listaSlots"></div>
+
+          <div class="agregar-slot" id="agregarSlot" hidden>
+            <select id="selectInstrumento" aria-label="Instrumento a agregar"></select>
+            <button type="button" id="botonAgregarSlot">Agregar instrumento</button>
+          </div>
+        </section>
+
+        <section class="notas">
+          <h2 class="ficha__seccion-titulo">Notas</h2>
+          <div id="listaNotas"></div>
+
+          <form class="nota-form" id="formNota">
+            <textarea id="notaTexto" placeholder="Tonalidad, recortes, arreglos…" required></textarea>
+            <select id="notaSlot">
+              <option value="">Nota general de la canción</option>
+            </select>
+            <button type="submit">Agregar nota</button>
+          </form>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/auth.js"></script>
+  <script src="/js/nav.js"></script>
+  <script src="/js/cancion.js"></script>
+</body>
+</html>
