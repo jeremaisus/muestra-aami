@@ -30,7 +30,7 @@ async function listar(req, res, next) {
 
 async function crear(req, res, next) {
   try {
-    const { usuario, password, etiqueta, rol, profesorId } = req.body || {};
+    const { usuario, password, etiqueta, rol } = req.body || {};
 
     if (!usuario || !password || !etiqueta || !rol) {
       return res.status(400).json({ error: 'usuario, password, etiqueta y rol son requeridos' });
@@ -42,6 +42,21 @@ async function crear(req, res, next) {
       return res.status(400).json({ error: 'password debe tener al menos 8 caracteres' });
     }
 
+    // Un acceso de rol profesor siempre necesita su fila en
+    // muestra_profesores (profes_pueden_editar_horarios la usa para saber
+    // cuáles son los horarios propios). Se crea sola, sin paso manual.
+    let profesorId = null;
+    if (rol === 'profesor') {
+      const { data: profesorCreado, error: errorProfesor } = await supabase
+        .from('muestra_profesores')
+        .insert({ nombre: etiqueta })
+        .select('id')
+        .single();
+
+      if (errorProfesor) return next(errorProfesor);
+      profesorId = profesorCreado.id;
+    }
+
     const password_hash = await bcrypt.hash(password, SALT_ROUNDS);
 
     const { data, error } = await supabase
@@ -51,7 +66,7 @@ async function crear(req, res, next) {
         password_hash,
         etiqueta,
         rol,
-        profesor_id: profesorId ?? null,
+        profesor_id: profesorId,
         activo: true,
         debe_cambiar: true,
       })
@@ -59,6 +74,9 @@ async function crear(req, res, next) {
       .single();
 
     if (error) {
+      // Si el acceso no se pudo crear (ej. usuario duplicado), no dejamos
+      // un profesor huérfano sin acceso que lo use.
+      if (profesorId) await supabase.from('muestra_profesores').delete().eq('id', profesorId);
       return manejarErrorPg(error, next, {
         23505: 'Ya existe un acceso con ese usuario',
         23503: 'profesorId inválido',

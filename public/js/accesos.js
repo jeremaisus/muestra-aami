@@ -7,8 +7,6 @@
     nuevoPassword: document.getElementById('nuevoPassword'),
     nuevaEtiqueta: document.getElementById('nuevaEtiqueta'),
     nuevoRol: document.getElementById('nuevoRol'),
-    campoNuevoProfesor: document.getElementById('campoNuevoProfesor'),
-    nuevoProfesor: document.getElementById('nuevoProfesor'),
     aviso: document.getElementById('aviso'),
     estadoCarga: document.getElementById('estadoCarga'),
     lista: document.getElementById('lista'),
@@ -36,15 +34,9 @@
       return;
     }
 
-    el.nuevoRol.addEventListener('change', actualizarCampoProfesor);
-    actualizarCampoProfesor();
     el.formAlta.addEventListener('submit', crearAcceso);
 
     await cargar();
-  }
-
-  function actualizarCampoProfesor() {
-    el.campoNuevoProfesor.hidden = el.nuevoRol.value !== 'profesor';
   }
 
   async function cargar() {
@@ -54,14 +46,6 @@
       const [{ accesos }, { profesores }] = await Promise.all([api('/api/accesos'), api('/api/profesores')]);
       state.accesos = accesos;
       state.profesores = profesores.filter((p) => p.activo);
-
-      el.nuevoProfesor.innerHTML = '';
-      state.profesores.forEach((p) => {
-        const opt = document.createElement('option');
-        opt.value = p.id;
-        opt.textContent = p.nombre;
-        el.nuevoProfesor.appendChild(opt);
-      });
 
       el.estadoCarga.hidden = true;
       render();
@@ -85,12 +69,15 @@
           password: el.nuevoPassword.value,
           etiqueta: el.nuevaEtiqueta.value.trim(),
           rol,
-          profesorId: rol === 'profesor' ? el.nuevoProfesor.value : null,
         }),
       });
       state.accesos.push(acceso);
+      if (acceso.profesorId) {
+        // el backend ya creó y vinculó la fila en muestra_profesores
+        const { profesores } = await api('/api/profesores');
+        state.profesores = profesores.filter((p) => p.activo);
+      }
       el.formAlta.reset();
-      actualizarCampoProfesor();
       render();
     } catch (err) {
       el.aviso.textContent = err.message;
@@ -144,10 +131,25 @@
     meta.textContent = partes.join(' · ');
     principal.appendChild(meta);
 
+    if (acceso.rol === 'profesor' && !acceso.profesorId) {
+      const avisoSinVincular = document.createElement('p');
+      avisoSinVincular.className = 'admin-alta__nota';
+      avisoSinVincular.textContent = 'Sin profesor vinculado: no se le van a poder cargar horarios propios.';
+      principal.appendChild(avisoSinVincular);
+    }
+
     fila.appendChild(principal);
 
     const acciones = document.createElement('div');
     acciones.className = 'admin-fila__acciones';
+
+    if (acceso.rol === 'profesor' && !acceso.profesorId) {
+      const vincular = document.createElement('button');
+      vincular.type = 'button';
+      vincular.textContent = 'Vincular profesor';
+      vincular.addEventListener('click', () => vincularProfesor(acceso));
+      acciones.appendChild(vincular);
+    }
 
     const resetear = document.createElement('button');
     resetear.type = 'button';
@@ -222,6 +224,27 @@
     principal.innerHTML = '';
     principal.appendChild(edicion);
     input.focus();
+  }
+
+  async function vincularProfesor(acceso) {
+    try {
+      const { profesor } = await api('/api/profesores', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre: acceso.etiqueta }),
+      });
+      state.profesores.push(profesor);
+
+      const { acceso: actualizado } = await api(`/api/accesos/${acceso.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ profesorId: profesor.id }),
+      });
+      Object.assign(acceso, actualizado);
+      render();
+    } catch (err) {
+      alert(err.message);
+    }
   }
 
   async function cambiarActivo(acceso, activo) {

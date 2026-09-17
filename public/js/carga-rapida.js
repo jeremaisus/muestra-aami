@@ -48,6 +48,7 @@
     botonOtraDuracion: document.getElementById('botonOtraDuracion'),
     estadoGuardado: document.getElementById('estadoGuardado'),
     csvTexto: document.getElementById('csvTexto'),
+    botonModelo: document.getElementById('botonModelo'),
     botonPreview: document.getElementById('botonPreview'),
     previewCsv: document.getElementById('previewCsv'),
   };
@@ -118,6 +119,7 @@
       el.boton75.addEventListener('click', () => guardarBloque(75));
       el.botonOtraDuracion.addEventListener('click', () => guardarBloque(Number(el.otraDuracion.value)));
       el.botonPreview.addEventListener('click', previsualizarCsv);
+      el.botonModelo.addEventListener('click', descargarModeloCsv);
       document.addEventListener('keydown', (ev) => {
         if (ev.key === 'Escape' && el.cuerpo.contains(document.activeElement)) cancelarBloque();
       });
@@ -433,6 +435,29 @@
   }
 
   // --- Importar CSV -----------------------------------------------------
+
+  function descargarModeloCsv() {
+    const nombresEjemplo = ['Ana Pérez', 'Tomás Gómez', 'Sofía Ruiz'];
+    const profesoresEjemplo = state.profesores.length > 0 ? state.profesores : [{ nombre: 'Nombre del profesor' }];
+    const instrumentosEjemplo =
+      state.instrumentos.length > 0 ? state.instrumentos : [{ nombre: 'Guitarra' }, { nombre: 'Piano' }, { nombre: 'Canto' }];
+
+    const filas = nombresEjemplo.map((nombre, i) => {
+      const instrumento = instrumentosEjemplo[i % instrumentosEjemplo.length].nombre;
+      const profesor = profesoresEjemplo[i % profesoresEjemplo.length].nombre;
+      return [nombre, instrumento, profesor];
+    });
+
+    const csv = ['nombre,instrumento,profesor', ...filas.map((f) => f.join(','))].join('\n');
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'modelo-alumnos.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   async function previsualizarCsv() {
     const csv = el.csvTexto.value.trim();

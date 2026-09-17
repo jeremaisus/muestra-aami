@@ -217,6 +217,13 @@
   cursor: pointer;
 }
 
+#botonModelo {
+  background: none;
+  color: var(--color-text);
+  border: 1px solid var(--color-line);
+  margin-bottom: var(--space-2);
+}
+
 .import-csv table {
   width: 100%;
   border-collapse: collapse;

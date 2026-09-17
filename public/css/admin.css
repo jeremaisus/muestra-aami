@@ -67,6 +67,13 @@
   font-weight: 500;
 }
 
+.admin-alta__nota {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
 .admin-fila {
   display: flex;
   align-items: center;

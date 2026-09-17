@@ -271,7 +271,10 @@ Pegar esto tal cual antes de generar el primer componente:
       1h/1h15 sugerida según cantidad. Al guardar, muestra/profesor/día
       quedan fijos, la hora se autocompleta con el fin del bloque anterior
       y el foco vuelve al nombre. Import CSV/Excel al costado (preview +
-      confirmación manual). Alumnos (`alumnos.html`): catálogo con filtro
+      confirmación manual), con botón "Descargar modelo CSV" que baja un
+      archivo de ejemplo (3 alumnos, profesores e instrumentos distintos)
+      con los encabezados exactos que espera el importador. Alumnos
+      (`alumnos.html`): catálogo con filtro
       "sin canción asignada", contador "Faltan N de M" y un popup por fila
       ("Acciones") para ver el profesor, marcar/desmarcar `participa`
       (admin), y asignar/quitar de una banda sin cambiar de pantalla.
@@ -280,7 +283,13 @@ Pegar esto tal cual antes de generar el primer componente:
       cada bloque). Filtros por muestra, profesor e instrumento. Control de
       zoom (+/−, 5 niveles) sobre la escala vertical de la tabla, con el
       nivel recordado durante la sesión (`sessionStorage`). Link de
-      exportación a PDF.
+      exportación a PDF. Cada bloque de clase es clickeable (mobile y
+      desktop) y abre un popup con los alumnos del bloque: para cada uno,
+      elegir la canción y confirmar en un clic, reutilizando las mismas
+      reglas que `cancion.html` (aviso de instrumento duplicado, una
+      persona no puede ocupar dos slots de la misma canción, slot vacío
+      vs. crear uno nuevo según permisos). Evita tener que ir a la pantalla
+      de canciones para asignar desde el horario.
 - [x] Canciones: catálogo por muestra con alta + aviso de duplicado, y
       ahora también tonalidad y observaciones visibles directo en el
       listado (`canciones.html`). Al crear una canción se generan
@@ -311,9 +320,17 @@ Pegar esto tal cual antes de generar el primer componente:
       activar/desactivar. Es la pantalla para reemplazar "Profesor 1"..
       "Profesor 7" por los nombres reales.
 - [x] Accesos (`accesos.html`, solo admin): crear accesos (usuario,
-      contraseña inicial, etiqueta, rol, profesor vinculado), resetear
-      contraseña y activar/desactivar. Protegido contra desactivar la
-      propia cuenta (ya lo hacía el backend, ahora la interfaz lo respeta).
+      contraseña inicial, etiqueta, rol), resetear contraseña y
+      activar/desactivar. Protegido contra desactivar la propia cuenta (ya
+      lo hacía el backend, ahora la interfaz lo respeta). Al crear un
+      acceso con rol "profesor" ya no se elige el profesor vinculado a
+      mano: el backend crea sola la fila en `muestra_profesores` con el
+      mismo nombre y la deja vinculada (`profesor_id`), que es lo que usa
+      el interruptor `profes_pueden_editar_horarios` para saber cuáles son
+      los horarios propios de cada profesor. Si un acceso de profesor
+      quedó sin vincular (datos previos a este cambio), la fila lo avisa
+      ("Sin profesor vinculado…") y ofrece un botón "Vincular profesor"
+      que crea y liga la fila faltante sin perder el acceso existente.
 - [x] Configuración (`config.html`, solo admin): los dos interruptores de
       `muestra_config` con explicación de una línea cada uno (arrancan
       apagados, no se tocaron) y el link a la carpeta madre de Drive.
