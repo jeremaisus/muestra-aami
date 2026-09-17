@@ -53,8 +53,13 @@ Cada instrumento tiene un **color fijo**, usado de forma consistente en toda la 
 - Un alumno **sí** puede estar en muchas canciones distintas. Sin límite.
 - Un **profesor** puede ocupar un slot. Se muestra distinguido:
   `Guitarra 2 — profe Jeremías`.
-- Un slot vacío puede marcarse como `se_busca = true` para que aparezca en el
-  dashboard de faltantes.
+- Un slot vacío aparece **siempre** en el dashboard de faltantes, esté o no
+  marcado. `se_busca = true` es una etiqueta aparte, para resaltar cuáles son
+  más urgentes — no filtra ni oculta el resto. Cualquier profesor puede
+  **registrar interés** en cubrir un slot vacío (tabla `muestra_slot_interes`),
+  sin que eso lo ocupe: administración ve quién se ofreció y decide. Este
+  mecanismo es independiente del interruptor `profes_pueden_ocupar_slots` —
+  levantar la mano nunca modifica el slot.
 - Las canciones **no alojan archivos**. El material vive en Google Drive y la app
   solo apunta: cada canción puede tener **varios links con etiqueta** (pista,
   partitura, audio de referencia, la versión en la tonalidad que se toca).
