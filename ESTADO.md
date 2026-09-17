@@ -250,9 +250,13 @@ Pegar esto tal cual antes de generar el primer componente:
 
 - [x] Relevamiento y definición de reglas de negocio
 - [x] Esquema SQL (`muestra_schema.sql`)
-- [ ] Correr el esquema en Supabase
-- [ ] Scaffold Express + auth usuario/contraseña + `muestra_config`
-- [ ] Endpoints CRUD
+- [x] Correr el esquema en Supabase
+- [x] Scaffold Express + auth usuario/contraseña + `muestra_config`
+- [x] Endpoints CRUD (auth, config, shows, instrumentos, profesores,
+      personas, alumnos + importar CSV, clases, canciones + links +
+      check-duplicado, slots + interés, notas, dashboard, programa, accesos).
+      Pendiente: `log` (queda como placeholder, no hace falta todavía);
+      exportación PDF, explícitamente pospuesta.
 - [ ] Pantalla de carga rápida de alumnos
 - [ ] Grilla semanal
 - [ ] Detalle de canción + notas
