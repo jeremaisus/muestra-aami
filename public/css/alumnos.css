@@ -54,12 +54,130 @@
   margin-left: var(--space-2);
 }
 
-.alumno-fila__borrar {
+.alumno-fila__acciones {
+  display: flex;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.alumno-fila__acciones button {
   background: none;
   border: none;
   color: var(--color-text-secondary);
   text-decoration: underline;
   font-size: 13px;
   cursor: pointer;
+  min-height: var(--touch-min);
+}
+
+/* --- Popup de acciones rápidas ------------------------------------- */
+
+.acciones-dialog {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+  width: min(420px, calc(100vw - var(--space-8)));
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-base);
+}
+
+.acciones-dialog::backdrop {
+  background: rgba(28, 30, 29, 0.35);
+}
+
+.acciones-dialog__titulo {
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: 20px;
+  margin: 0 0 2px;
+}
+
+.acciones-dialog__meta {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-4);
+}
+
+.acciones-dialog__seccion {
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--color-line);
+}
+
+.acciones-dialog__seccion-titulo {
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: 14px;
+  margin: 0 0 var(--space-2);
+}
+
+.acciones-dialog__fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-size: 14px;
+  padding: var(--space-1) 0;
+}
+
+.acciones-dialog__fila button {
+  background: none;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  min-height: var(--touch-min);
+  padding: 0 var(--space-2);
+  font-size: 13px;
+  color: var(--color-text);
+  cursor: pointer;
   flex-shrink: 0;
+}
+
+.acciones-dialog__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 14px;
+  min-height: var(--touch-min);
+}
+
+.acciones-dialog__asignar {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.acciones-dialog__asignar select {
+  flex: 1;
+  min-height: var(--touch-min);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  font-size: 14px;
+}
+
+.acciones-dialog__asignar button {
+  min-height: var(--touch-min);
+  padding: 0 var(--space-3);
+  background: var(--color-text);
+  color: var(--color-surface);
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.acciones-dialog__vacio {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.acciones-dialog__cerrar {
+  margin-top: var(--space-4);
+  min-height: var(--touch-min);
+  padding: 0 var(--space-3);
+  background: none;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  cursor: pointer;
 }

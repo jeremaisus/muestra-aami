@@ -104,6 +104,26 @@ async function crear(req, res, next) {
       });
     }
 
+    // Arma la banda de arranque: un slot vacío por cada instrumento activo
+    // del catálogo, salvo Iniciación musical (no es un instrumento de banda).
+    // Es un adelanto para ahorrar pasos, no una restricción: se puede borrar
+    // o sumar slots después sin problema.
+    const { data: instrumentos, error: errorInstrumentos } = await supabase
+      .from('muestra_instrumentos')
+      .select('id')
+      .eq('activo', true)
+      .neq('nombre', 'Iniciación musical');
+
+    if (errorInstrumentos) return next(errorInstrumentos);
+
+    if (instrumentos.length > 0) {
+      const { error: errorSlots } = await supabase
+        .from('muestra_slots')
+        .insert(instrumentos.map((i) => ({ cancion_id: data.id, instrumento_id: i.id, numero: 1 })));
+
+      if (errorSlots) return next(errorSlots);
+    }
+
     res.status(201).json({ cancion: serialize(data) });
   } catch (err) {
     next(err);

@@ -30,6 +30,12 @@
   text-decoration: underline;
 }
 
+/* Solo tiene sentido junto a la tabla de horario (desktop/iPad): la lista
+   mobile no tiene escala vertical que acercar o alejar. */
+.zoom-control {
+  display: none;
+}
+
 .topbar__muestras button {
   appearance: none;
   background: none;
@@ -172,6 +178,38 @@
   .grilla-semana {
     display: block;
     padding: 0 var(--space-4) var(--space-6);
+  }
+
+  .zoom-control {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-shrink: 0;
+  }
+
+  .zoom-control button {
+    min-width: var(--touch-min);
+    min-height: var(--touch-min);
+    background: none;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
+    font-family: var(--font-condensed);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .zoom-control button:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  #zoomLabel {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    min-width: 34px;
+    text-align: center;
   }
 
   .grilla-semana__encabezados {

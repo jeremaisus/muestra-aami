@@ -262,27 +262,41 @@ Pegar esto tal cual antes de generar el primer componente:
 - [x] Login real (`login.html`) + cambio de contraseña forzado
       (`cambiar-password.html`) para `debe_cambiar = true`. Shell compartido
       (`auth.js`, `nav.js`, `muestra.js`) en todas las pantallas protegidas.
-- [x] Carga rápida de alumnos (`carga-rapida.html`): profesor + día fijos
-      arriba, formulario nombre → instrumento → hora de inicio para el
-      primer alumno del bloque, se van sumando alumnos (autocompletado por
-      nombre existente, reutiliza persona/alumno si ya existe), duración
-      1h/1h15 sugerida según cantidad y guarda el bloque; el foco vuelve al
-      nombre y la hora de inicio del próximo bloque se autocompleta con el
-      fin del anterior. Import CSV/Excel al costado (preview + confirmación
-      manual). Alumnos (`alumnos.html`): catálogo con filtro "sin canción
-      asignada" y contador "Faltan N de M".
+- [x] Carga rápida de alumnos (`carga-rapida.html`): un solo formulario en
+      línea con muestra (tabs, siempre visibles), profesor, nombre,
+      instrumento y hora de inicio (desplegable 14:00–21:30 cada 15 min, 24
+      horas) — sin paso previo bloqueante. Al agregar el primer alumno del
+      bloque, profesor y hora quedan fijos hasta guardarlo. Autocompletado
+      por nombre existente, reutiliza persona/alumno si ya existe. Duración
+      1h/1h15 sugerida según cantidad. Al guardar, muestra/profesor/día
+      quedan fijos, la hora se autocompleta con el fin del bloque anterior
+      y el foco vuelve al nombre. Import CSV/Excel al costado (preview +
+      confirmación manual). Alumnos (`alumnos.html`): catálogo con filtro
+      "sin canción asignada", contador "Faltan N de M" y un popup por fila
+      ("Acciones") para ver el profesor, marcar/desmarcar `participa`
+      (admin), y asignar/quitar de una banda sin cambiar de pantalla.
 - [x] Grilla semanal (mobile: columna única por día · iPad/desktop: tabla
       día × horario 14:00–21:30, con barra de color por alumno dentro de
-      cada bloque). Filtros por muestra, profesor e instrumento. Link de
+      cada bloque). Filtros por muestra, profesor e instrumento. Control de
+      zoom (+/−, 5 niveles) sobre la escala vertical de la tabla, con el
+      nivel recordado durante la sesión (`sessionStorage`). Link de
       exportación a PDF.
-- [x] Canciones: catálogo por muestra con alta + aviso de duplicado
-      (`canciones.html`) y ficha de detalle (`cancion.html`) con tonalidad,
-      observaciones, links de Drive, slots de la banda (con aviso de
-      instrumento repetido, asignación de alumno/profesor, `se_busca`,
-      toggle de interés para profesores) y panel de notas embebido (según
-      ESTADO.md, no como pantalla aparte). Un profesor solo puede ocupar un
-      slot vacío; reasignar o vaciar un slot ya ocupado es exclusivo de
-      administración (ver `PATCH /api/slots/:id`).
+- [x] Canciones: catálogo por muestra con alta + aviso de duplicado, y
+      ahora también tonalidad y observaciones visibles directo en el
+      listado (`canciones.html`). Al crear una canción se generan
+      automáticamente los slots vacíos de todos los instrumentos activos
+      del catálogo (salvo Iniciación musical), listos para asignar. Ficha
+      de detalle (`cancion.html`): tonalidad, observaciones, links de
+      Drive, banda con aviso de instrumento repetido, selector de alumno
+      ya filtrado por el instrumento del slot (menos pasos para asignar),
+      `se_busca`, toggle de interés para profesores y — para admin — quién
+      se ofreció por cada slot vacío ("Se ofrecieron: ..."), más panel de
+      notas embebido (según ESTADO.md, no como pantalla aparte; edición de
+      la nota propia dentro de los 15 minutos). Un profesor solo puede
+      ocupar un slot vacío; reasignar o vaciar un slot ya ocupado es
+      exclusivo de administración (ver `PATCH /api/slots/:id`). Un
+      profesor logueado ve la grilla completa de la escuela y puede
+      escribir notas en cualquier canción, como pide la regla de negocio.
 - [x] Dashboard de faltantes (`dashboard.html`): instrumentos que faltan por
       canción (con `se_busca` y color de instrumento) + alumnos sin canción
       asignada.
@@ -290,12 +304,27 @@ Pegar esto tal cual antes de generar el primer componente:
       Subir/Bajar (se eligió esto en vez de drag-and-drop, más simple y
       confiable en touch sin sumar una librería) + link de exportación.
 - [x] Exportación a PDF (`GET /api/export/programa`, `GET /api/export/grilla`,
-      ambos `?showId=`), con `pdfkit`. Diseño funcional en Helvetica, no
-      replica la tipografía Barlow de la interfaz (ver resumen de la sesión).
+      ambos `?showId=`), con `pdfkit`. Usa Barlow Condensed y Barlow
+      embebidas (`src/assets/fonts/`, bajadas del repo oficial de Google
+      Fonts, licencia OFL incluida), igual que la interfaz.
+- [x] Profesores (`profesores.html`, solo admin): crear, renombrar y
+      activar/desactivar. Es la pantalla para reemplazar "Profesor 1"..
+      "Profesor 7" por los nombres reales.
+- [x] Accesos (`accesos.html`, solo admin): crear accesos (usuario,
+      contraseña inicial, etiqueta, rol, profesor vinculado), resetear
+      contraseña y activar/desactivar. Protegido contra desactivar la
+      propia cuenta (ya lo hacía el backend, ahora la interfaz lo respeta).
+- [x] Configuración (`config.html`, solo admin): los dos interruptores de
+      `muestra_config` con explicación de una línea cada uno (arrancan
+      apagados, no se tocaron) y el link a la carpeta madre de Drive.
 - [ ] Deploy a Hostinger
 
 ## Pendiente de datos
 
-- Nombres de los 7 profesores, con usuario y contraseña inicial de cada uno
+- Nombres reales de los 7 profesores: los accesos ya existen
+  (`profe1`..`profe7`, contraseña provisoria `aami2026`, `debe_cambiar =
+  true`) vinculados 1 a 1 con "Profesor 1".."Profesor 7" — falta
+  renombrarlos desde `profesores.html` cuando estén los nombres reales.
 - Fechas de las tres muestras
-- Listado de alumnos (CSV o transcripción de los papeles)
+- Listado de alumnos (CSV o transcripción de los papeles) — ya hay carga
+  real en curso en la muestra Niños (Dario, Ruben, la canción "La Vida").

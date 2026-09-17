@@ -15,7 +15,7 @@
   };
 
   async function api(path, opciones) {
-    const res = await fetch(path, { credentials: 'same-origin', ...opciones });
+    const res = await fetch(path, { credentials: 'same-origin', cache: 'no-store', ...opciones });
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
       throw new Error(body.error || `Error ${res.status} en ${path}`);
@@ -166,11 +166,23 @@
         artista.textContent = cancion.artista;
         meta.appendChild(artista);
       }
+      if (cancion.tonalidad) {
+        const tonalidad = document.createElement('span');
+        tonalidad.textContent = cancion.tonalidad;
+        meta.appendChild(tonalidad);
+      }
       const estado = document.createElement('span');
       estado.className = `catalogo__estado--${cancion.estado}`;
       estado.textContent = cancion.estado === 'completa' ? 'Completa' : 'Incompleta';
       meta.appendChild(estado);
       fila.appendChild(meta);
+
+      if (cancion.observaciones) {
+        const obs = document.createElement('div');
+        obs.className = 'catalogo__observaciones';
+        obs.textContent = cancion.observaciones;
+        fila.appendChild(obs);
+      }
 
       el.catalogo.appendChild(fila);
     });

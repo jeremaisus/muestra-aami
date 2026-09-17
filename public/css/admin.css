@@ -1,0 +1,267 @@
+/* Compartido por las pantallas de administración: Profesores, Accesos,
+   Configuración. Mismo lenguaje visual que el resto (sin cards, barra de
+   1px como separador, jerarquía por peso tipográfico). */
+
+.admin {
+  padding: var(--space-4);
+  max-width: 720px;
+}
+
+.admin__titulo {
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: 22px;
+  margin: 0 0 var(--space-4);
+}
+
+.admin-alta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: flex-end;
+  padding-bottom: var(--space-4);
+  margin-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.admin-alta__campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1 1 160px;
+}
+
+.admin-alta__campo label {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.admin-alta__campo input,
+.admin-alta__campo select {
+  min-height: var(--touch-min);
+  padding: 0 var(--space-2);
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  font-family: var(--font-base);
+  font-size: 15px;
+}
+
+.admin-alta button {
+  min-height: var(--touch-min);
+  padding: 0 var(--space-4);
+  background: var(--color-text);
+  color: var(--color-surface);
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.admin-alta__aviso {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.admin-fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-line);
+  flex-wrap: wrap;
+}
+
+.admin-fila--inactivo {
+  opacity: 0.55;
+}
+
+.admin-fila__principal {
+  flex: 1 1 200px;
+  min-width: 0;
+}
+
+.admin-fila__nombre {
+  font-family: var(--font-condensed);
+  font-weight: 500;
+  font-size: 17px;
+}
+
+.admin-fila__meta {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.admin-fila__inactivo-etiqueta {
+  font-family: var(--font-base);
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid var(--color-text-secondary);
+  color: var(--color-text-secondary);
+  border-radius: var(--radius);
+  padding: 1px 6px;
+  margin-left: var(--space-2);
+}
+
+.admin-fila__edicion {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  flex: 1 1 200px;
+}
+
+.admin-fila__edicion input {
+  flex: 1;
+  min-height: var(--touch-min);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  font-family: var(--font-base);
+  font-size: 15px;
+}
+
+.admin-fila__acciones {
+  display: flex;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.admin-fila__acciones button {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  font-size: 13px;
+  cursor: pointer;
+  min-height: var(--touch-min);
+}
+
+.admin-vacio {
+  padding: var(--space-4) 0;
+  color: var(--color-text-secondary);
+  font-size: 15px;
+}
+
+/* --- Configuración: interruptores ------------------------------------ */
+
+.config-item {
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.config-item__cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.config-item__nombre {
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: 17px;
+}
+
+.config-item__explicacion {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: var(--space-1) 0 0;
+  max-width: 52ch;
+}
+
+.config-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.config-switch input {
+  position: absolute;
+  opacity: 0;
+  width: 44px;
+  height: 28px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.config-switch__pista {
+  width: 44px;
+  height: 28px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  position: relative;
+  pointer-events: none;
+}
+
+.config-switch__perilla {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 22px;
+  height: 22px;
+  background: var(--color-text-secondary);
+  border-radius: 1px;
+  transition: transform 150ms ease, background 150ms ease;
+}
+
+.config-switch input:checked + .config-switch__pista .config-switch__perilla {
+  transform: translateX(16px);
+  background: var(--color-text);
+}
+
+.config-switch input:focus-visible + .config-switch__pista {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}
+
+.config-item__estado {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-top: var(--space-1);
+}
+
+.config-drive {
+  padding: var(--space-4) 0;
+}
+
+.config-drive__campo {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.config-drive__campo input {
+  flex: 1;
+  min-height: var(--touch-min);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  font-family: var(--font-base);
+  font-size: 15px;
+}
+
+.config-drive__campo button {
+  min-height: var(--touch-min);
+  padding: 0 var(--space-3);
+  background: var(--color-text);
+  color: var(--color-surface);
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.config-guardado {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  min-height: 18px;
+  margin-top: var(--space-2);
+}

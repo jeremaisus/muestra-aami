@@ -8,6 +8,9 @@ window.Nav = (() => {
     { href: '/carga-rapida.html', label: 'Carga rápida' },
     { href: '/dashboard.html', label: 'Faltantes' },
     { href: '/programa.html', label: 'Programa' },
+    { href: '/profesores.html', label: 'Profesores', soloAdmin: true },
+    { href: '/accesos.html', label: 'Accesos', soloAdmin: true },
+    { href: '/config.html', label: 'Configuración', soloAdmin: true },
   ];
 
   function render(acceso) {
@@ -26,7 +29,7 @@ window.Nav = (() => {
 
     const links = document.createElement('div');
     links.className = 'nav-principal__links';
-    PAGINAS.forEach((pagina) => {
+    PAGINAS.filter((pagina) => !pagina.soloAdmin || acceso.rol === 'admin').forEach((pagina) => {
       const a = document.createElement('a');
       a.href = pagina.href;
       a.textContent = pagina.label;

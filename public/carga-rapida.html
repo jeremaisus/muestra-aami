@@ -18,13 +18,6 @@
 
   <div class="dias" id="dias" role="tablist" aria-label="Día"></div>
 
-  <div class="contexto">
-    <div class="contexto__campo">
-      <label for="selectProfesor">Profesor</label>
-      <select id="selectProfesor"></select>
-    </div>
-  </div>
-
   <p class="estado-carga" id="estadoCarga" hidden></p>
 
   <div class="cuerpo-carga" id="cuerpo" hidden>
@@ -38,6 +31,10 @@
       </p>
 
       <form class="form-alumno" id="formAlumno" autocomplete="off">
+        <div class="form-alumno__campo" id="campoProfesor">
+          <label for="selectProfesor">Profesor</label>
+          <select id="selectProfesor"></select>
+        </div>
         <div class="form-alumno__campo form-alumno__campo--nombre">
           <label for="nombreAlumno">Nombre</label>
           <input type="text" id="nombreAlumno" list="personasExistentes" required />
@@ -49,7 +46,7 @@
         </div>
         <div class="form-alumno__campo" id="campoHoraInicio">
           <label for="horaInicioBloque">Hora de inicio</label>
-          <input type="time" id="horaInicioBloque" min="14:00" max="21:30" step="900" required />
+          <select id="horaInicioBloque" required></select>
         </div>
         <button type="submit">Agregar alumno</button>
       </form>

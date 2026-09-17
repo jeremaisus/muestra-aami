@@ -11,7 +11,7 @@
   };
 
   async function api(path) {
-    const res = await fetch(path, { credentials: 'same-origin' });
+    const res = await fetch(path, { credentials: 'same-origin', cache: 'no-store' });
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
       throw new Error(body.error || `Error ${res.status} en ${path}`);

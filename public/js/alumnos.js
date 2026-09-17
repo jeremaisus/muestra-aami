@@ -1,5 +1,14 @@
 (() => {
-  const state = { shows: [], showId: null, acceso: null, alumnos: [], sinAsignarIds: new Set(), soloSinCancion: false };
+  const state = {
+    shows: [],
+    showId: null,
+    acceso: null,
+    config: null,
+    alumnos: [],
+    sinAsignarIds: new Set(),
+    soloSinCancion: false,
+    cancionesConSlots: null,
+  };
 
   const el = {
     muestras: document.getElementById('muestras'),
@@ -7,10 +16,11 @@
     contador: document.getElementById('contador'),
     estadoCarga: document.getElementById('estadoCarga'),
     lista: document.getElementById('lista'),
+    dialog: document.getElementById('accionesDialog'),
   };
 
   async function api(path, opciones) {
-    const res = await fetch(path, { credentials: 'same-origin', ...opciones });
+    const res = await fetch(path, { credentials: 'same-origin', cache: 'no-store', ...opciones });
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
       throw new Error(body.error || `Error ${res.status} en ${path}`);
@@ -26,8 +36,9 @@
     window.Nav.render(acceso);
 
     try {
-      const { shows } = await api('/api/shows');
+      const [{ shows }, { config }] = await Promise.all([api('/api/shows'), api('/api/config')]);
       state.shows = shows;
+      state.config = config;
       const guardada = window.MuestraActual.obtener();
       state.showId = shows.some((s) => s.id === guardada) ? guardada : shows[0]?.id ?? null;
 
@@ -54,6 +65,7 @@
       btn.addEventListener('click', () => {
         if (state.showId === show.id) return;
         state.showId = show.id;
+        state.cancionesConSlots = null;
         window.MuestraActual.guardar(show.id);
         renderMuestras();
         cargar();
@@ -136,10 +148,18 @@
 
     fila.appendChild(info);
 
+    const acciones = document.createElement('div');
+    acciones.className = 'alumno-fila__acciones';
+
+    const abrir = document.createElement('button');
+    abrir.type = 'button';
+    abrir.textContent = 'Acciones';
+    abrir.addEventListener('click', () => abrirAcciones(alumno));
+    acciones.appendChild(abrir);
+
     if (state.acceso.rol === 'admin') {
       const borrar = document.createElement('button');
       borrar.type = 'button';
-      borrar.className = 'alumno-fila__borrar';
       borrar.textContent = 'Borrar';
       borrar.addEventListener('click', async () => {
         if (!confirm(`¿Borrar a ${alumno.persona?.nombre} — ${alumno.instrumento?.nombre}?`)) return;
@@ -152,10 +172,218 @@
           alert(err.message);
         }
       });
-      fila.appendChild(borrar);
+      acciones.appendChild(borrar);
     }
 
+    fila.appendChild(acciones);
+
     return fila;
+  }
+
+  // --- Popup de acciones rápidas -------------------------------------
+
+  function esAdmin() {
+    return state.acceso.rol === 'admin';
+  }
+
+  function puedeAsignar() {
+    return esAdmin() || state.config.profesPuedenOcuparSlots;
+  }
+
+  async function cargarCancionesConSlots() {
+    if (state.cancionesConSlots) return state.cancionesConSlots;
+    const { canciones } = await api(`/api/canciones?showId=${state.showId}`);
+    state.cancionesConSlots = await Promise.all(
+      canciones.map((cancion) =>
+        api(`/api/canciones/${cancion.id}/slots`).then(({ slots }) => ({ cancion, slots }))
+      )
+    );
+    return state.cancionesConSlots;
+  }
+
+  async function abrirAcciones(alumno) {
+    el.dialog.innerHTML = '';
+    const cargando = document.createElement('p');
+    cargando.textContent = 'Cargando…';
+    el.dialog.appendChild(cargando);
+    el.dialog.showModal();
+
+    try {
+      const listas = await cargarCancionesConSlots();
+      renderDialogAcciones(alumno, listas);
+    } catch (err) {
+      el.dialog.innerHTML = '';
+      const error = document.createElement('p');
+      error.textContent = `No se pudo cargar: ${err.message}`;
+      el.dialog.appendChild(error);
+    }
+  }
+
+  function renderDialogAcciones(alumno, listas) {
+    const vacios = [];
+    const ocupados = [];
+    listas.forEach(({ cancion, slots }) => {
+      slots.forEach((slot) => {
+        if (slot.instrumento.id !== alumno.instrumentoId) return;
+        if (slot.alumnoId === alumno.id) ocupados.push({ cancion, slot });
+        else if (!slot.alumnoId && !slot.profesorId) vacios.push({ cancion, slot });
+      });
+    });
+
+    el.dialog.innerHTML = '';
+
+    const titulo = document.createElement('p');
+    titulo.className = 'acciones-dialog__titulo';
+    titulo.textContent = `${alumno.persona?.nombre || 'Sin nombre'} — ${alumno.instrumento?.nombre || ''}`;
+    el.dialog.appendChild(titulo);
+
+    const meta = document.createElement('p');
+    meta.className = 'acciones-dialog__meta';
+    meta.textContent = `profe ${alumno.profesor?.nombre || '—'}`;
+    el.dialog.appendChild(meta);
+
+    if (esAdmin()) {
+      const seccionParticipa = document.createElement('div');
+      seccionParticipa.className = 'acciones-dialog__seccion';
+      const label = document.createElement('label');
+      label.className = 'acciones-dialog__toggle';
+      const check = document.createElement('input');
+      check.type = 'checkbox';
+      check.checked = alumno.persona?.participa !== false;
+      check.addEventListener('change', () => cambiarParticipa(alumno, check.checked));
+      label.appendChild(check);
+      label.appendChild(document.createTextNode(' Participa de la muestra'));
+      seccionParticipa.appendChild(label);
+      el.dialog.appendChild(seccionParticipa);
+    }
+
+    const seccionOcupa = document.createElement('div');
+    seccionOcupa.className = 'acciones-dialog__seccion';
+    const tituloOcupa = document.createElement('p');
+    tituloOcupa.className = 'acciones-dialog__seccion-titulo';
+    tituloOcupa.textContent = 'En estas canciones';
+    seccionOcupa.appendChild(tituloOcupa);
+
+    if (ocupados.length === 0) {
+      const vacio = document.createElement('p');
+      vacio.className = 'acciones-dialog__vacio';
+      vacio.textContent = 'Todavía no está en ninguna banda.';
+      seccionOcupa.appendChild(vacio);
+    }
+
+    ocupados.forEach(({ cancion, slot }) => {
+      const fila = document.createElement('div');
+      fila.className = 'acciones-dialog__fila';
+      const texto = document.createElement('span');
+      texto.textContent = `${cancion.titulo} — ${slot.instrumento.nombre} ${slot.numero}`;
+      fila.appendChild(texto);
+
+      if (esAdmin()) {
+        const quitar = document.createElement('button');
+        quitar.type = 'button';
+        quitar.textContent = 'Quitar';
+        quitar.addEventListener('click', () => quitarDeSlot(alumno, slot, cancion));
+        fila.appendChild(quitar);
+      }
+
+      seccionOcupa.appendChild(fila);
+    });
+
+    el.dialog.appendChild(seccionOcupa);
+
+    if (puedeAsignar()) {
+      const seccionAsignar = document.createElement('div');
+      seccionAsignar.className = 'acciones-dialog__seccion';
+      const tituloAsignar = document.createElement('p');
+      tituloAsignar.className = 'acciones-dialog__seccion-titulo';
+      tituloAsignar.textContent = 'Asignar a una banda';
+      seccionAsignar.appendChild(tituloAsignar);
+
+      if (vacios.length === 0) {
+        const vacio = document.createElement('p');
+        vacio.className = 'acciones-dialog__vacio';
+        vacio.textContent = `No hay slots vacíos de ${alumno.instrumento?.nombre} en esta muestra.`;
+        seccionAsignar.appendChild(vacio);
+      } else {
+        const fila = document.createElement('div');
+        fila.className = 'acciones-dialog__asignar';
+        const select = document.createElement('select');
+        vacios.forEach(({ cancion, slot }) => {
+          const opt = document.createElement('option');
+          opt.value = slot.id;
+          opt.textContent = `${cancion.titulo} — ${slot.instrumento.nombre} ${slot.numero}`;
+          select.appendChild(opt);
+        });
+        fila.appendChild(select);
+
+        const asignar = document.createElement('button');
+        asignar.type = 'button';
+        asignar.textContent = 'Asignar';
+        asignar.addEventListener('click', () => asignarASlot(alumno, select.value, vacios));
+        fila.appendChild(asignar);
+
+        seccionAsignar.appendChild(fila);
+      }
+
+      el.dialog.appendChild(seccionAsignar);
+    }
+
+    const cerrar = document.createElement('button');
+    cerrar.type = 'button';
+    cerrar.className = 'acciones-dialog__cerrar';
+    cerrar.textContent = 'Cerrar';
+    cerrar.addEventListener('click', () => el.dialog.close());
+    el.dialog.appendChild(cerrar);
+  }
+
+  async function cambiarParticipa(alumno, participa) {
+    try {
+      await api(`/api/personas/${alumno.persona.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ participa }),
+      });
+      if (alumno.persona) alumno.persona.participa = participa;
+    } catch (err) {
+      alert(err.message);
+    }
+  }
+
+  async function asignarASlot(alumno, slotId, vacios) {
+    if (!slotId) return;
+    try {
+      await api(`/api/slots/${slotId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ alumnoId: alumno.id }),
+      });
+      state.cancionesConSlots = null;
+      state.sinAsignarIds.delete(alumno.id);
+      render();
+      const listas = await cargarCancionesConSlots();
+      renderDialogAcciones(alumno, listas);
+    } catch (err) {
+      alert(err.message);
+    }
+  }
+
+  async function quitarDeSlot(alumno, slot, cancion) {
+    if (!confirm(`¿Quitar a ${alumno.persona?.nombre} de ${cancion.titulo}?`)) return;
+    try {
+      await api(`/api/slots/${slot.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ alumnoId: null }),
+      });
+      state.cancionesConSlots = null;
+      const { sinAsignar } = await api(`/api/dashboard/sin-asignar?showId=${state.showId}`);
+      state.sinAsignarIds = new Set(sinAsignar.map((a) => a.alumnoId));
+      render();
+      const listas = await cargarCancionesConSlots();
+      renderDialogAcciones(alumno, listas);
+    } catch (err) {
+      alert(err.message);
+    }
   }
 
   init();

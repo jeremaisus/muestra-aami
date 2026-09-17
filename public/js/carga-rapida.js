@@ -27,6 +27,7 @@
   const el = {
     muestras: document.getElementById('muestras'),
     dias: document.getElementById('dias'),
+    campoProfesor: document.getElementById('campoProfesor'),
     selectProfesor: document.getElementById('selectProfesor'),
     estadoCarga: document.getElementById('estadoCarga'),
     cuerpo: document.getElementById('cuerpo'),
@@ -52,7 +53,7 @@
   };
 
   async function api(path, opciones) {
-    const res = await fetch(path, { credentials: 'same-origin', ...opciones });
+    const res = await fetch(path, { credentials: 'same-origin', cache: 'no-store', ...opciones });
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
       throw new Error(body.error || `Error ${res.status} en ${path}`);
@@ -109,6 +110,7 @@
       renderDias();
       renderProfesor();
       renderInstrumentoSelect();
+      renderHoraInicioOptions();
       renderOtraDuracion();
 
       el.formAlumno.addEventListener('submit', agregarAlumno);
@@ -198,10 +200,26 @@
       if (p.id === state.profesorId) opt.selected = true;
       el.selectProfesor.appendChild(opt);
     });
+    // Campo del mismo formulario que nombre/instrumento/hora: solo se puede
+    // tocar mientras el bloque está vacío (después queda fijo, como la
+    // hora), así que un cambio acá nunca necesita cancelar nada en curso.
     el.selectProfesor.addEventListener('change', () => {
       state.profesorId = el.selectProfesor.value;
-      cancelarBloque();
     });
+  }
+
+  // Ventana 14:00–21:30 en pasos de 15, formato 24 horas siempre (evita que
+  // el navegador lo muestre en AM/PM como puede pasar con <input type=time>).
+  function renderHoraInicioOptions() {
+    el.horaInicioBloque.innerHTML = '';
+    for (let min = 14 * 60; min <= VENTANA_FIN_MIN; min += 15) {
+      const opt = document.createElement('option');
+      const hh = String(Math.floor(min / 60)).padStart(2, '0');
+      const mm = String(min % 60).padStart(2, '0');
+      opt.value = `${hh}:${mm}`;
+      opt.textContent = `${hh}:${mm}`;
+      el.horaInicioBloque.appendChild(opt);
+    }
   }
 
   function renderInstrumentoSelect() {
@@ -239,7 +257,8 @@
   function prepararProximoBloque() {
     state.roster = [];
     state.horaInicioBloque = null;
-    el.horaInicioBloque.value = state.horaInicioSiguiente || '';
+    if (state.horaInicioSiguiente) el.horaInicioBloque.value = state.horaInicioSiguiente;
+    if (state.profesorId) el.selectProfesor.value = state.profesorId;
     renderRoster();
     renderBloque();
     el.nombreAlumno.focus();
@@ -254,13 +273,15 @@
 
   function renderBloque() {
     el.campoHoraInicio.hidden = state.roster.length > 0;
+    el.campoProfesor.hidden = state.roster.length > 0;
     el.duracion.classList.toggle('duracion--visible', state.roster.length > 0);
     el.rosterLimite.hidden = state.roster.length < 3;
 
     if (state.roster.length === 0) {
       el.tituloBloque.textContent = 'Bloque nuevo';
     } else {
-      el.tituloBloque.textContent = `Bloque desde ${state.horaInicioBloque}`;
+      const profesor = state.profesores.find((p) => p.id === state.profesorId);
+      el.tituloBloque.textContent = `Bloque de ${profesor?.nombre || '—'} desde ${state.horaInicioBloque}`;
     }
 
     const sugerido = state.roster.length <= 1 ? 60 : 75;

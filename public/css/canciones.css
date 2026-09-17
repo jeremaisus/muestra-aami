@@ -112,6 +112,13 @@
   font-weight: 500;
 }
 
+.catalogo__observaciones {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+  font-style: italic;
+}
+
 .catalogo__vacio {
   padding: var(--space-6) var(--space-4);
   color: var(--color-text-secondary);

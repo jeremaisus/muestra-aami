@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Configuración — Muestra AAMI</title>
+  <link rel="stylesheet" href="/css/tokens.css" />
+  <link rel="stylesheet" href="/css/nav.css" />
+  <link rel="stylesheet" href="/css/admin.css" />
+</head>
+<body>
+  <div id="navPrincipal"></div>
+
+  <main class="admin">
+    <h1 class="admin__titulo">Configuración</h1>
+
+    <p class="estado-carga" id="estadoCarga" hidden></p>
+
+    <div id="contenido" hidden>
+      <div class="config-item">
+        <div class="config-item__cabecera">
+          <span class="config-item__nombre">Profesores pueden editar horarios</span>
+          <label class="config-switch">
+            <input type="checkbox" id="switchHorarios" />
+            <span class="config-switch__pista"><span class="config-switch__perilla"></span></span>
+          </label>
+        </div>
+        <p class="config-item__explicacion">
+          Permite que cada profesor cargue sus propios horarios y alumnos desde Carga rápida.
+        </p>
+      </div>
+
+      <div class="config-item">
+        <div class="config-item__cabecera">
+          <span class="config-item__nombre">Profesores pueden ocupar slots</span>
+          <label class="config-switch">
+            <input type="checkbox" id="switchSlots" />
+            <span class="config-switch__pista"><span class="config-switch__perilla"></span></span>
+          </label>
+        </div>
+        <p class="config-item__explicacion">
+          Permite que un profesor se asigne a un slot vacío de una canción.
+        </p>
+      </div>
+
+      <div class="config-drive">
+        <span class="config-item__nombre">Carpeta madre de Drive</span>
+        <p class="config-item__explicacion">El link se muestra en el encabezado del catálogo de canciones.</p>
+        <div class="config-drive__campo">
+          <input type="url" id="driveUrl" placeholder="https://drive.google.com/…" />
+          <button type="button" id="botonGuardarDrive">Guardar</button>
+        </div>
+      </div>
+
+      <p class="config-guardado" id="estadoGuardado"></p>
+    </div>
+  </main>
+
+  <script src="/js/auth.js"></script>
+  <script src="/js/nav.js"></script>
+  <script src="/js/config.js"></script>
+</body>
+</html>

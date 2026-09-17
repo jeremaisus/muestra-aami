@@ -1,7 +1,9 @@
 (() => {
   const VENTANA_INICIO_MIN = 14 * 60; // 14:00
   const VENTANA_FIN_MIN = 21 * 60 + 30; // 21:30
-  const PX_POR_MIN = 1.6;
+  const ZOOM_NIVELES = [0.8, 1.1, 1.6, 2.2, 3];
+  const ZOOM_CLAVE = 'muestra-aami:grilla-zoom';
+  const ZOOM_INDICE_DEFAULT = 2; // 1.6, el valor original
 
   const DIAS = [
     { id: 1, corta: 'Lu', larga: 'Lunes' },
@@ -22,11 +24,31 @@
     profesorFiltro: '',
     instrumentoFiltro: '',
     cargando: false,
+    zoomIndice: leerZoomGuardado(),
   };
+
+  function leerZoomGuardado() {
+    try {
+      const crudo = sessionStorage.getItem(ZOOM_CLAVE);
+      if (crudo === null) return ZOOM_INDICE_DEFAULT;
+      const guardado = Number(crudo);
+      if (Number.isInteger(guardado) && ZOOM_NIVELES[guardado] !== undefined) return guardado;
+    } catch {
+      /* noop */
+    }
+    return ZOOM_INDICE_DEFAULT;
+  }
+
+  function pxPorMin() {
+    return ZOOM_NIVELES[state.zoomIndice];
+  }
 
   const el = {
     muestras: document.getElementById('muestras'),
     dias: document.getElementById('dias'),
+    zoomOut: document.getElementById('zoomOut'),
+    zoomIn: document.getElementById('zoomIn'),
+    zoomLabel: document.getElementById('zoomLabel'),
     filtroProfesor: document.getElementById('filtroProfesor'),
     filtroInstrumento: document.getElementById('filtroInstrumento'),
     estadoCarga: document.getElementById('estadoCarga'),
@@ -38,7 +60,7 @@
   };
 
   async function api(path) {
-    const res = await fetch(path, { credentials: 'same-origin' });
+    const res = await fetch(path, { credentials: 'same-origin', cache: 'no-store' });
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
       throw new Error(body.error || `Error ${res.status} en ${path}`);
@@ -83,6 +105,7 @@
       renderMuestras();
       renderDias();
       renderFiltros();
+      renderZoom();
       actualizarLinkExportar();
       await cargarClases();
     } catch (err) {
@@ -190,6 +213,28 @@
     });
   }
 
+  function renderZoom() {
+    el.zoomLabel.textContent = `${Math.round((pxPorMin() / ZOOM_NIVELES[ZOOM_INDICE_DEFAULT]) * 100)}%`;
+    el.zoomOut.disabled = state.zoomIndice === 0;
+    el.zoomIn.disabled = state.zoomIndice === ZOOM_NIVELES.length - 1;
+
+    el.zoomOut.onclick = () => cambiarZoom(-1);
+    el.zoomIn.onclick = () => cambiarZoom(1);
+  }
+
+  function cambiarZoom(delta) {
+    const nuevo = state.zoomIndice + delta;
+    if (nuevo < 0 || nuevo >= ZOOM_NIVELES.length) return;
+    state.zoomIndice = nuevo;
+    try {
+      sessionStorage.setItem(ZOOM_CLAVE, String(nuevo));
+    } catch {
+      /* noop */
+    }
+    renderZoom();
+    renderGrillaSemana();
+  }
+
   // --- Datos filtrados -------------------------------------------------
 
   function clasesFiltradas() {
@@ -269,7 +314,7 @@
   }
 
   function renderGrillaSemana() {
-    const alturaTotal = (VENTANA_FIN_MIN - VENTANA_INICIO_MIN) * PX_POR_MIN;
+    const alturaTotal = (VENTANA_FIN_MIN - VENTANA_INICIO_MIN) * pxPorMin();
 
     // Encabezados de día.
     el.encabezadosDias.innerHTML = '<span></span>';
@@ -285,7 +330,7 @@
     for (let min = VENTANA_INICIO_MIN; min <= VENTANA_FIN_MIN; min += 30) {
       const marca = document.createElement('span');
       marca.className = 'grilla-semana__hora-marca';
-      marca.style.top = `${(min - VENTANA_INICIO_MIN) * PX_POR_MIN}px`;
+      marca.style.top = `${(min - VENTANA_INICIO_MIN) * pxPorMin()}px`;
       const h = String(Math.floor(min / 60)).padStart(2, '0');
       const m = String(min % 60).padStart(2, '0');
       marca.textContent = `${h}:${m}`;
@@ -306,7 +351,7 @@
       for (let min = VENTANA_INICIO_MIN; min <= VENTANA_FIN_MIN; min += 30) {
         const linea = document.createElement('div');
         linea.className = 'grilla-semana__linea-hora';
-        linea.style.top = `${(min - VENTANA_INICIO_MIN) * PX_POR_MIN}px`;
+        linea.style.top = `${(min - VENTANA_INICIO_MIN) * pxPorMin()}px`;
         columna.appendChild(linea);
       }
 
@@ -324,8 +369,8 @@
 
     const bloque = document.createElement('article');
     bloque.className = 'clase-bloque';
-    bloque.style.top = `${(inicio - VENTANA_INICIO_MIN) * PX_POR_MIN}px`;
-    bloque.style.height = `${(fin - inicio) * PX_POR_MIN}px`;
+    bloque.style.top = `${(inicio - VENTANA_INICIO_MIN) * pxPorMin()}px`;
+    bloque.style.height = `${(fin - inicio) * pxPorMin()}px`;
 
     const hora = document.createElement('p');
     hora.className = 'clase-bloque__hora';

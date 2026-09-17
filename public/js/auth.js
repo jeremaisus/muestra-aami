@@ -2,7 +2,7 @@
 // consultamos /api/auth/me, nunca leemos ni escribimos la cookie directo.
 window.Auth = (() => {
   async function sesionActual() {
-    const res = await fetch('/api/auth/me', { credentials: 'same-origin' });
+    const res = await fetch('/api/auth/me', { credentials: 'same-origin', cache: 'no-store' });
     if (!res.ok) return null;
     const { acceso } = await res.json();
     return acceso;

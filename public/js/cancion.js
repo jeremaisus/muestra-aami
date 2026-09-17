@@ -11,6 +11,7 @@
     instrumentos: [],
     alumnos: [],
     profesores: [],
+    interesados: {}, // slotId -> [{acceso: {etiqueta}}], solo para admin
   };
 
   const el = {
@@ -44,7 +45,7 @@
   };
 
   async function api(path, opciones) {
-    const res = await fetch(path, { credentials: 'same-origin', ...opciones });
+    const res = await fetch(path, { credentials: 'same-origin', cache: 'no-store', ...opciones });
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
       throw new Error(body.error || `Error ${res.status} en ${path}`);
@@ -101,6 +102,8 @@
       state.alumnos = alumnos;
       state.profesores = profesores.filter((p) => p.activo);
 
+      if (esAdmin()) await cargarInteresados();
+
       el.estadoCarga.hidden = true;
       el.contenido.hidden = false;
       renderTodo();
@@ -112,6 +115,15 @@
   function mostrarError(mensaje) {
     el.estadoCarga.hidden = false;
     el.estadoCarga.textContent = `No se pudo cargar: ${mensaje}`;
+  }
+
+  // Solo admin: quién se ofreció para cada slot vacío ("puedo cubrir esto").
+  async function cargarInteresados() {
+    const vacios = state.slots.filter((s) => !s.alumno && !s.profesor);
+    const listas = await Promise.all(
+      vacios.map((s) => api(`/api/slots/${s.id}/interes`).then(({ interesados }) => [s.id, interesados]))
+    );
+    state.interesados = Object.fromEntries(listas);
   }
 
   function renderTodo() {
@@ -346,6 +358,16 @@
     }
     fila.appendChild(info);
 
+    if (esAdmin() && !slot.alumno && !slot.profesor) {
+      const interesados = state.interesados[slot.id] || [];
+      if (interesados.length > 0) {
+        const linea = document.createElement('p');
+        linea.className = 'slot__interesados';
+        linea.textContent = `Se ofrecieron: ${interesados.map((i) => i.acceso?.etiqueta || i.acceso?.usuario).join(', ')}`;
+        fila.appendChild(linea);
+      }
+    }
+
     const acciones = document.createElement('div');
     acciones.className = 'slot__acciones';
 
@@ -356,13 +378,17 @@
       optVacio.value = '';
       optVacio.textContent = '— vacío —';
       selectAlumno.appendChild(optVacio);
-      state.alumnos.forEach((a) => {
-        const opt = document.createElement('option');
-        opt.value = a.id;
-        opt.textContent = `${a.persona?.nombre} — ${a.instrumento?.nombre}`;
-        if (slot.alumnoId === a.id) opt.selected = true;
-        selectAlumno.appendChild(opt);
-      });
+      // Solo alumnos del mismo instrumento que el slot: es el filtro que
+      // ahorra pasos a la hora de asignar.
+      state.alumnos
+        .filter((a) => a.instrumento?.id === slot.instrumento.id || a.id === slot.alumnoId)
+        .forEach((a) => {
+          const opt = document.createElement('option');
+          opt.value = a.id;
+          opt.textContent = a.persona?.nombre || 'Sin nombre';
+          if (slot.alumnoId === a.id) opt.selected = true;
+          selectAlumno.appendChild(opt);
+        });
       selectAlumno.addEventListener('change', () => asignarAlumno(slot.id, selectAlumno.value || null));
       acciones.appendChild(selectAlumno);
     }
