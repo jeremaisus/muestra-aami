@@ -190,6 +190,25 @@ create table muestra_slots (
 create index on muestra_slots (cancion_id);
 create index on muestra_slots (alumno_id);
 
+
+-- ------------------------------------------------------------
+-- 9b. INTERÉS EN SLOTS VACÍOS
+--     Un profesor puede levantar la mano para cubrir un slot
+--     (se_busca = true) sin que eso lo ocupe. Administración ve
+--     quién se ofreció y decide. Independiente del interruptor
+--     profes_pueden_ocupar_slots: registrar interés nunca
+--     modifica el slot, solo lo señala.
+-- ------------------------------------------------------------
+create table muestra_slot_interes (
+  id        uuid primary key default gen_random_uuid(),
+  slot_id   uuid not null references muestra_slots(id) on delete cascade,
+  acceso_id uuid not null references muestra_accesos(id) on delete cascade,
+  creado_en timestamptz not null default now(),
+  unique (slot_id, acceso_id)
+);
+
+create index on muestra_slot_interes (slot_id);
+
 -- Una misma persona no puede ocupar dos slots de la misma canción
 -- (Renata no canta y toca piano en el mismo tema).
 create unique index muestra_slots_persona_unica
