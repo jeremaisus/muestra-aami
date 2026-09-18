@@ -51,6 +51,54 @@ async function listar(req, res, next) {
   }
 }
 
+// Para "Asignar horarios": alumnos con su clase actual (o null si están
+// pendientes). Un profesor SIEMPRE queda restringido a los suyos acá, sin
+// importar qué mande por query — es la única pantalla donde eso importa,
+// porque expone y deja tocar el horario de cada alumno. El resto de la app
+// (alumnos.html, canciones, grilla) sigue mostrando toda la escuela, como
+// pide la regla de negocio de lectura para profesores.
+async function listarHorarios(req, res, next) {
+  try {
+    const esAdmin = req.acceso.rol === 'admin';
+    const profesorId = esAdmin ? req.query.profesorId || undefined : req.acceso.profesor_id;
+
+    if (!esAdmin && !profesorId) {
+      return res.json({ alumnos: [], total: 0 });
+    }
+
+    let query = supabase.from('muestra_alumnos').select(SELECT_CON_RELACIONES);
+    if (profesorId) query = query.eq('profesor_id', profesorId);
+
+    const [{ data: alumnos, error: errorAlumnos }, { data: clasesAlumnos, error: errorClases }] = await Promise.all([
+      query,
+      supabase
+        .from('muestra_clase_alumnos')
+        .select('alumno_id, clase:muestra_clases(id, dia, hora_inicio, hora_fin)'),
+    ]);
+
+    if (errorAlumnos) return next(errorAlumnos);
+    if (errorClases) return next(errorClases);
+
+    const claseDeAlumno = new Map(clasesAlumnos.filter((ca) => ca.clase).map((ca) => [ca.alumno_id, ca.clase]));
+
+    const participantes = alumnos.filter((a) => a.persona && a.persona.participa !== false);
+
+    const resultado = participantes.map((a) => {
+      const clase = claseDeAlumno.get(a.id);
+      return {
+        ...serialize(a),
+        clase: clase
+          ? { id: clase.id, dia: clase.dia, horaInicio: clase.hora_inicio, horaFin: clase.hora_fin }
+          : null,
+      };
+    });
+
+    res.json({ alumnos: resultado, total: resultado.length });
+  } catch (err) {
+    next(err);
+  }
+}
+
 async function obtener(req, res, next) {
   try {
     const { data, error } = await supabase
@@ -278,4 +326,13 @@ async function importarConfirmar(req, res, next) {
   }
 }
 
-module.exports = { listar, obtener, crear, actualizar, eliminar, importarPreview, importarConfirmar };
+module.exports = {
+  listar,
+  listarHorarios,
+  obtener,
+  crear,
+  actualizar,
+  eliminar,
+  importarPreview,
+  importarConfirmar,
+};

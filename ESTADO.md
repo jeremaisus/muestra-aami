@@ -181,6 +181,11 @@ el 30 de octubre"), para que nadie descubra por prueba y error que no puede edit
 7. **Orden del programa** — reordenar los números de cada muestra.
 8. **Exportar / imprimir** — PDF del programa y de la grilla. Imprescindible:
    el día de la muestra alguien va a tener una hoja en la mano.
+9. **Asignar horarios** (`asignar-horarios.html`) — la pantalla que resuelve
+   la carga masiva de horarios después de una importación: lista de alumnos
+   sin horario con buscador por nombre y contador `faltan N de M`, pensada
+   para repetirse 100+ veces seguidas con el mínimo de pasos. Ver detalle
+   en "Estado actual".
 
 ---
 
@@ -388,6 +393,37 @@ Pegar esto tal cual antes de generar el primer componente:
 - [x] Configuración (`config.html`, solo admin): los dos interruptores de
       `muestra_config` con explicación de una línea cada uno (arrancan
       apagados, no se tocaron) y el link a la carpeta madre de Drive.
+- [x] Asignar horarios (`asignar-horarios.html`): pantalla dedicada a cargar
+      los horarios después de una importación masiva (los 122 alumnos
+      importados por CSV entraron sin horario). Lista de alumnos
+      **pendientes** (sin clase) con buscador por nombre en vivo y contador
+      "Faltan N de M". Toggle "Mostrar también asignados" para encontrar a
+      un alumno ya asignado (mismo buscador) y quitarlo con un botón —
+      corrige errores de carga sin tener que ir a la grilla.
+      Flujo de asignación por alumno (pensado para repetirse 100+ veces
+      seguidas): un solo panel inline con día (Lu-Sa) + hora de inicio
+      (mismo desplegable 14:00-21:30 cada 15 min que Carga rápida). Si ya
+      existe una clase de ese profesor en ese día y hora, el panel lo
+      detecta solo y ofrece sumarse a esa clase con un clic (avisa si pasa
+      de 3 alumnos, no bloquea); si no existe, pide duración (botones
+      "1 h" / "1 h 15", igual que Carga rápida) y crea la clase. Después de
+      guardar, el foco vuelve al buscador para encadenar el siguiente
+      alumno sin tocar el mouse.
+      Permisos: administración ve y asigna los alumnos de todos los
+      profesores con un filtro por profesor; un profesor ve y asigna
+      únicamente los suyos — filtrado en el backend
+      (`GET /api/alumnos/horarios`, que fuerza el profesorId propio para
+      cualquier acceso no-admin sin importar qué mande la query), no solo
+      en la interfaz. También se cerró un agujero que ya existía en
+      `POST /api/clases` y `POST /api/clases/:id/alumnos`: nada impedía
+      antes que un profesor sumara a su propio bloque un `alumnoId` de
+      otro profesor (la interfaz nunca lo ofrecía, pero la API lo permitía).
+      Ahora ambos endpoints verifican que cada alumno sea del profesor
+      dueño de la clase cuando quien pide no es admin.
+      El acceso de un profesor a esta pantalla (para escribir, no para
+      leer) depende de `profes_pueden_editar_horarios`: con el interruptor
+      apagado ve su lista en modo lectura, con un aviso arriba, en vez de
+      un error — administración nunca depende de este interruptor.
 - [ ] Deploy a Hostinger
 
 ## Pendiente de datos
@@ -406,7 +442,10 @@ Pegar esto tal cual antes de generar el primer componente:
   Como personas separadas, sin fusionar por nombre repetido entre
   profesores/muestras. Sigue pendiente pasar por `alumnos.html` con el
   filtro "sin instrumento asignado" para asignarle a cada uno su
-  instrumento real.
+  instrumento real, y por `asignar-horarios.html` (pantalla nueva, ver
+  "Estado actual") para ubicarlos en la grilla — los 122 entraron sin
+  horario, así que la grilla semanal sigue vacía hasta que se haga esa
+  carga.
 - [x] Columna `pais` en `muestra_canciones` (`db/muestra_schema.sql` es la
   fuente de verdad, pero el proyecto no tiene forma automatizada de correr
   DDL contra Supabase — no hay `pg` ni Supabase CLI en el repo, el cliente

@@ -6,6 +6,7 @@ window.Nav = (() => {
     { href: '/canciones.html', label: 'Canciones' },
     { href: '/alumnos.html', label: 'Alumnos' },
     { href: '/carga-rapida.html', label: 'Carga rápida' },
+    { href: '/asignar-horarios.html', label: 'Asignar horarios' },
     { href: '/dashboard.html', label: 'Faltantes' },
     { href: '/programa.html', label: 'Programa' },
     { href: '/profesores.html', label: 'Profesores', soloAdmin: true },

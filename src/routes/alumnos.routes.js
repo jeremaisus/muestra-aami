@@ -3,6 +3,7 @@ const requireAuth = require('../middleware/requireAuth');
 const requireAdmin = require('../middleware/requireAdmin');
 const {
   listar,
+  listarHorarios,
   obtener,
   crear,
   actualizar,
@@ -14,6 +15,8 @@ const {
 const router = express.Router();
 
 router.get('/', requireAuth, listar);
+// Antes de /:id: si no, Express toma "horarios" como el parámetro id.
+router.get('/horarios', requireAuth, listarHorarios);
 router.get('/:id', requireAuth, obtener);
 router.post('/', requireAdmin, crear);
 router.post('/importar/preview', requireAdmin, importarPreview);

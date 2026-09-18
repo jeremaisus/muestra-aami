@@ -34,6 +34,19 @@ function esDuenio(req, profesorId) {
   return req.acceso.rol === 'admin' || req.acceso.profesor_id === profesorId;
 }
 
+// Ser dueño de la clase no alcanza: sin esto, un profesor podría sumar a su
+// propio bloque un alumnoId de otro profesor (nunca se lo ofrece la
+// interfaz, pero nada en la ruta lo impedía). Devuelve un mensaje de error
+// si algún alumno no es del profesor esperado, o null si está todo bien.
+async function verificarAlumnosDelProfesor(alumnoIds, profesorId) {
+  const { data, error } = await supabase.from('muestra_alumnos').select('id, profesor_id').in('id', alumnoIds);
+  if (error) throw error;
+
+  const encontrados = new Map(data.map((a) => [a.id, a.profesor_id]));
+  const ajeno = alumnoIds.some((id) => encontrados.get(id) !== profesorId);
+  return ajeno ? 'Solo podés cargar alumnos propios' : null;
+}
+
 async function listar(req, res, next) {
   try {
     let claseIdsFiltro;
@@ -66,6 +79,11 @@ async function crear(req, res, next) {
 
     if (req.acceso.rol !== 'admin' && req.acceso.profesor_id !== profesorId) {
       return res.status(403).json({ error: 'Solo podés cargar horarios propios' });
+    }
+
+    if (req.acceso.rol !== 'admin' && Array.isArray(alumnoIds) && alumnoIds.length > 0) {
+      const error403 = await verificarAlumnosDelProfesor(alumnoIds, profesorId);
+      if (error403) return res.status(403).json({ error: error403 });
     }
 
     const { data: clase, error } = await supabase
@@ -205,6 +223,11 @@ async function agregarAlumno(req, res, next) {
 
     if (!esDuenio(req, clase.profesor_id)) {
       return res.status(403).json({ error: 'Solo podés editar horarios propios' });
+    }
+
+    if (req.acceso.rol !== 'admin') {
+      const error403 = await verificarAlumnosDelProfesor([alumnoId], clase.profesor_id);
+      if (error403) return res.status(403).json({ error: error403 });
     }
 
     const { error: errorInsert } = await supabase
