@@ -105,14 +105,14 @@ async function crear(req, res, next) {
     }
 
     // Arma la banda de arranque: un slot vacío por cada instrumento activo
-    // del catálogo, salvo Iniciación musical (no es un instrumento de banda).
-    // Es un adelanto para ahorrar pasos, no una restricción: se puede borrar
-    // o sumar slots después sin problema.
+    // del catálogo, salvo Iniciación musical y Sin asignar (no son
+    // instrumentos de banda). Es un adelanto para ahorrar pasos, no una
+    // restricción: se puede borrar o sumar slots después sin problema.
     const { data: instrumentos, error: errorInstrumentos } = await supabase
       .from('muestra_instrumentos')
       .select('id')
       .eq('activo', true)
-      .neq('nombre', 'Iniciación musical');
+      .not('nombre', 'in', '("Iniciación musical","Sin asignar")');
 
     if (errorInstrumentos) return next(errorInstrumentos);
 

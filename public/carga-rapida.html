@@ -69,11 +69,12 @@
     <details class="import-csv" id="importCsv">
       <summary>Importar CSV / Excel (pegar listado)</summary>
       <p class="import-csv__nota">
-        Columnas requeridas: <strong>nombre, instrumento, profesor</strong> (nombres del catálogo, no ids).
-        Solo carga alumnos, no arma horarios.
+        Columnas requeridas: <strong>nombre, instrumento, profesor, muestra</strong> (nombres del catálogo, no ids;
+        muestra es Niños, Adolescentes o Adultos). Cada fila puede ser de una muestra distinta. Solo carga
+        alumnos, no arma horarios.
       </p>
       <button type="button" id="botonModelo">Descargar modelo CSV</button>
-      <textarea id="csvTexto" placeholder="nombre,instrumento,profesor&#10;Renata,Piano,Jeremías"></textarea>
+      <textarea id="csvTexto" placeholder="nombre,instrumento,profesor,muestra&#10;Renata,Piano,Jeremías,Niños"></textarea>
       <button type="button" id="botonPreview">Previsualizar</button>
       <div id="previewCsv"></div>
     </details>

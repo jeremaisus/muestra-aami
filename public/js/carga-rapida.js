@@ -441,14 +441,16 @@
     const profesoresEjemplo = state.profesores.length > 0 ? state.profesores : [{ nombre: 'Nombre del profesor' }];
     const instrumentosEjemplo =
       state.instrumentos.length > 0 ? state.instrumentos : [{ nombre: 'Guitarra' }, { nombre: 'Piano' }, { nombre: 'Canto' }];
+    const showsEjemplo = state.shows.length > 0 ? state.shows : [{ nombre: 'Niños' }];
 
     const filas = nombresEjemplo.map((nombre, i) => {
       const instrumento = instrumentosEjemplo[i % instrumentosEjemplo.length].nombre;
       const profesor = profesoresEjemplo[i % profesoresEjemplo.length].nombre;
-      return [nombre, instrumento, profesor];
+      const muestra = showsEjemplo[i % showsEjemplo.length].nombre;
+      return [nombre, instrumento, profesor, muestra];
     });
 
-    const csv = ['nombre,instrumento,profesor', ...filas.map((f) => f.join(','))].join('\n');
+    const csv = ['nombre,instrumento,profesor,muestra', ...filas.map((f) => f.join(','))].join('\n');
 
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -469,7 +471,7 @@
       const { filas } = await api('/api/alumnos/importar/preview', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ showId: state.showId, csv }),
+        body: JSON.stringify({ csv }),
       });
       renderPreviewCsv(filas);
     } catch (err) {
@@ -481,7 +483,7 @@
     el.previewCsv.innerHTML = '';
 
     const tabla = document.createElement('table');
-    tabla.innerHTML = `<thead><tr><th></th><th>Nombre</th><th>Instrumento</th><th>Profesor</th><th></th></tr></thead>`;
+    tabla.innerHTML = `<thead><tr><th></th><th>Nombre</th><th>Instrumento</th><th>Profesor</th><th>Muestra</th><th></th></tr></thead>`;
     const tbody = document.createElement('tbody');
 
     filas.forEach((fila) => {
@@ -513,6 +515,10 @@
       tdProf.textContent = fila.profesorNombre;
       tr.appendChild(tdProf);
 
+      const tdMuestra = document.createElement('td');
+      tdMuestra.textContent = fila.muestraNombre;
+      tr.appendChild(tdMuestra);
+
       const tdErr = document.createElement('td');
       if (fila.errores.length > 0) {
         tdErr.className = 'fila-error';
@@ -526,7 +532,10 @@
     });
 
     tabla.appendChild(tbody);
-    el.previewCsv.appendChild(tabla);
+    const tablaWrap = document.createElement('div');
+    tablaWrap.className = 'import-csv__tabla-wrap';
+    tablaWrap.appendChild(tabla);
+    el.previewCsv.appendChild(tablaWrap);
 
     const resumen = document.createElement('p');
     resumen.className = 'import-csv__resumen';
@@ -552,6 +561,7 @@
           nombre: f.nombre,
           instrumentoId: f.instrumentoId,
           profesorId: f.profesorId,
+          showId: f.showId,
           personaId: f.coincidencias[0]?.id || null,
         };
       });
@@ -562,7 +572,7 @@
       const { resultados } = await api('/api/alumnos/importar/confirmar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ showId: state.showId, filas: filasAImportar }),
+        body: JSON.stringify({ filas: filasAImportar }),
       });
       const ok = resultados.filter((r) => r.ok).length;
       el.previewCsv.innerHTML = `<p class="import-csv__resumen">Se importaron ${ok} de ${resultados.length} alumnos.</p>`;

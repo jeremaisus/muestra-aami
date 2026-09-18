@@ -1,4 +1,4 @@
-// Carga los accesos reales de los 7 profesores (nombres provisorios, se
+// Carga los accesos reales de los 8 profesores (nombres provisorios, se
 // renombran después en muestra_profesores) y confirma/crea el acceso admin.
 //
 // Las contraseñas NUNCA se hardcodean acá: se leen de variables de entorno
@@ -15,7 +15,7 @@ const bcrypt = require('bcrypt');
 const supabase = require('../src/config/supabase');
 
 const SALT_ROUNDS = 10;
-const CANTIDAD_PROFESORES = 7;
+const CANTIDAD_PROFESORES = 8;
 
 const PASSWORD_PROFESORES = process.env.SEED_PASSWORD_PROFESORES;
 const PASSWORD_ADMIN = process.env.SEED_PASSWORD_ADMIN;

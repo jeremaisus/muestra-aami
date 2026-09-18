@@ -14,7 +14,7 @@ Vida útil: de ahora a fin de año. Prioridad: velocidad de carga y claridad vis
 - Deploy: GitHub → VPS Hostinger
 - **Mobile-first**: se usa mayormente desde el celular
 
-Escala: ~100 alumnos, 7 profesores, 3 muestras.
+Escala: ~120 alumnos, 8 profesores, 3 muestras.
 
 ---
 
@@ -36,7 +36,12 @@ En la interfaz siempre se muestra como `Renata — Canto` / `Renata — Piano`.
 
 ### Instrumentos
 Catálogo cerrado + opción personalizada:
-canto, guitarra, bajo, batería, piano, iniciación musical, otro.
+canto, guitarra, bajo, batería, piano, iniciación musical, sin asignar, otro.
+
+`Sin asignar` (gris `#8A908C`) es un instrumento placeholder: sirve para
+importar alumnos cuyo instrumento todavía no se definió. Igual que
+`Iniciación musical`, queda excluido de los slots que se generan solos al
+crear una canción (no son instrumentos de banda).
 
 Cada instrumento tiene un **color fijo**, usado de forma consistente en toda la app
 (grilla, fichas de banda, dashboard). Es el principal recurso visual del sistema.
@@ -125,7 +130,7 @@ el 30 de octubre"), para que nadie descubra por prueba y error que no puede edit
 - **Usuario + contraseña.** Los dos los crea y asigna administración. Sin autoregistro.
 - Acceso de prueba `profesor` (creado por `scripts/seed.js`, contraseña por
   variable de entorno): desactivado, ya hay accesos reales (`profe1`..
-  `profe7`, ver `scripts/seed-produccion.js`).
+  `profe8`, ver `scripts/seed-produccion.js`).
 - `debe_cambiar = true` fuerza el cambio de contraseña en el primer ingreso.
 - Hash con bcrypt. Nunca en texto plano.
 - Sesión en JWT dentro de cookie httpOnly. Sin expiración corta: los profesores
@@ -142,7 +147,10 @@ el 30 de octubre"), para que nadie descubra por prueba y error que no puede edit
 3. **Detalle de canción** — título, artista, tonalidad, observaciones de arreglo,
    **lista de links de Drive con etiqueta**, slots de la banda y panel de notas
    al costado (abajo en mobile). Los links se abren en pestaña nueva.
-4. **Alumnos** — listado, filtro "sin canción asignada", contador `faltan N de M`.
+4. **Alumnos** — listado, filtros "sin canción asignada" y "sin instrumento
+   asignado" (lista de pendientes para corregir el instrumento de una
+   importación masiva), contador `faltan N de M`. Desde el popup de
+   acciones de cada fila se puede cambiar el instrumento en un paso.
 5. **Canciones** — catálogo por muestra, con aviso de duplicados y acceso directo
    a la carpeta madre de Drive desde el encabezado.
 6. **Dashboard de faltantes** — vista `muestra_v_faltantes`. Qué bandas necesitan
@@ -175,6 +183,12 @@ táctil grande en lugar de un selector de hora.
 **Importar CSV / Excel**: opción secundaria, en un costado. Sirve para pegar
 listados transcriptos por IA desde los papeles actuales. Previsualización
 obligatoria con corrección manual antes de confirmar la importación.
+Columnas: `nombre, instrumento, profesor, muestra` (la muestra es Niños,
+Adolescentes o Adultos) — cada fila puede ser de una muestra distinta, así
+que un solo CSV puede cargar las tres de una vez. Nunca fusiona por nombre:
+cada fila crea una persona nueva, aunque el nombre se repita entre
+profesores o muestras (quien importa decide a mano si son la misma persona,
+reusando la coincidencia que ofrece la previsualización).
 
 ---
 
@@ -205,7 +219,7 @@ Lo memorable es una sola cosa: el color de instrumento como barra de canal.
 
 Pegar esto tal cual antes de generar el primer componente:
 
-> Escuela de música en Bariloche, muestra de fin de año. La usan siete profesores
+> Escuela de música en Bariloche, muestra de fin de año. La usan ocho profesores
 > desde el celular entre clase y clase, y una persona de administración desde un
 > iPad. El trabajo de la interfaz es que se vea de un vistazo quién toca qué, a
 > qué hora, y qué instrumento falta en cada banda.
@@ -273,12 +287,21 @@ Pegar esto tal cual antes de generar el primer componente:
       quedan fijos, la hora se autocompleta con el fin del bloque anterior
       y el foco vuelve al nombre. Import CSV/Excel al costado (preview +
       confirmación manual), con botón "Descargar modelo CSV" que baja un
-      archivo de ejemplo (3 alumnos, profesores e instrumentos distintos)
-      con los encabezados exactos que espera el importador. Alumnos
-      (`alumnos.html`): catálogo con filtro
-      "sin canción asignada", contador "Faltan N de M" y un popup por fila
-      ("Acciones") para ver el profesor, marcar/desmarcar `participa`
-      (admin), y asignar/quitar de una banda sin cambiar de pantalla.
+      archivo de ejemplo (3 alumnos, profesores, instrumentos y muestras
+      distintas) con los encabezados exactos que espera el importador:
+      `nombre, instrumento, profesor, muestra` — una fila por alumno, cada
+      una con su propia muestra, así que un solo CSV carga Niños,
+      Adolescentes y Adultos de una vez. Nunca fusiona por nombre entre
+      filas del mismo CSV (cada una crea una persona nueva salvo que ya
+      exista y se reuse a mano la coincidencia). Alumnos (`alumnos.html`):
+      catálogo con filtros "sin canción asignada" y "sin instrumento
+      asignado" (pensado como lista de pendientes tras una importación
+      masiva con el instrumento `Sin asignar`), contador "Faltan N de M... ·
+      N sin instrumento asignado" y un popup por fila ("Acciones") para ver
+      el profesor, cambiar el instrumento en un paso (select + Guardar,
+      arriba de todo para no esperar a que carguen las bandas), marcar/
+      desmarcar `participa` (admin), y asignar/quitar de una banda sin
+      cambiar de pantalla.
 - [x] Grilla semanal (mobile: columna única por día · iPad/desktop: tabla
       día × horario 14:00–21:30, con barra de color por alumno dentro de
       cada bloque). Filtros por muestra, profesor e instrumento. Control de
@@ -339,14 +362,21 @@ Pegar esto tal cual antes de generar el primer componente:
 
 ## Pendiente de datos
 
-- Nombres reales de los 7 profesores: los accesos ya existen
-  (`profe1`..`profe7`, `debe_cambiar = true`) vinculados 1 a 1 con
-  "Profesor 1".."Profesor 7" — falta renombrarlos desde `profesores.html`
-  cuando estén los nombres reales. Los accesos se crean/resetean con
-  `scripts/seed-produccion.js`, que lee la contraseña provisoria de una
-  variable de entorno (`SEED_PASSWORD_PROFESORES`) y la hashea antes de
-  guardarla — nunca queda en texto plano en el repo. La contraseña vigente
-  se distribuye por fuera del repo (no en este archivo).
+- [x] Son 8 profesores, no 7. Nombres reales ya cargados en
+  `muestra_profesores` y en la etiqueta de cada acceso: Ariel, Juanjo,
+  Jere, Laly, Martín, Javy, Juan Cruz y Barby (`profe1`..`profe8`, en ese
+  orden). El acceso `profe8` se creó copiando el hash de `profe1` (misma
+  contraseña provisoria, `debe_cambiar = true`) — nunca se leyó ni se
+  escribió en texto plano. `scripts/seed-produccion.js` ahora contempla los
+  8 accesos para el caso de tener que resetear contraseñas
+  (`SEED_PASSWORD_PROFESORES`, nunca en el repo).
+- [x] Listado de alumnos: 122 alumnos importados con el importador CSV
+  (instrumento `Sin asignar` para todos salvo los de Barby, que entraron
+  con `Iniciación musical`), repartidos en las tres muestras según el CSV.
+  Como personas separadas, sin fusionar por nombre repetido entre
+  profesores/muestras. Sigue pendiente pasar por `alumnos.html` con el
+  filtro "sin instrumento asignado" para asignarle a cada uno su
+  instrumento real.
 - Fechas de las tres muestras
-- Listado de alumnos (CSV o transcripción de los papeles) — ya hay carga
-  real en curso en la muestra Niños (Dario, Ruben, la canción "La Vida").
+- La carga real que ya estaba en curso en la muestra Niños (Dario, Ruben,
+  la canción "La Vida") se dejó intacta.

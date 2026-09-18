@@ -224,10 +224,15 @@
   margin-bottom: var(--space-2);
 }
 
+.import-csv__tabla-wrap {
+  overflow-x: auto;
+  margin-top: var(--space-3);
+}
+
 .import-csv table {
   width: 100%;
+  min-width: 480px;
   border-collapse: collapse;
-  margin-top: var(--space-3);
   font-size: 13px;
 }
 

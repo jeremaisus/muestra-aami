@@ -1,23 +1,32 @@
 (() => {
+  const NOMBRE_SIN_ASIGNAR = 'Sin asignar';
+
   const state = {
     shows: [],
     showId: null,
     acceso: null,
     config: null,
+    instrumentos: [],
     alumnos: [],
     sinAsignarIds: new Set(),
     soloSinCancion: false,
+    soloSinInstrumento: false,
     cancionesConSlots: null,
   };
 
   const el = {
     muestras: document.getElementById('muestras'),
     soloSinCancion: document.getElementById('soloSinCancion'),
+    soloSinInstrumento: document.getElementById('soloSinInstrumento'),
     contador: document.getElementById('contador'),
     estadoCarga: document.getElementById('estadoCarga'),
     lista: document.getElementById('lista'),
     dialog: document.getElementById('accionesDialog'),
   };
+
+  function esSinInstrumento(alumno) {
+    return alumno.instrumento?.nombre === NOMBRE_SIN_ASIGNAR;
+  }
 
   async function api(path, opciones) {
     const res = await fetch(path, { credentials: 'same-origin', cache: 'no-store', ...opciones });
@@ -36,15 +45,24 @@
     window.Nav.render(acceso);
 
     try {
-      const [{ shows }, { config }] = await Promise.all([api('/api/shows'), api('/api/config')]);
+      const [{ shows }, { config }, { instrumentos }] = await Promise.all([
+        api('/api/shows'),
+        api('/api/config'),
+        api('/api/instrumentos'),
+      ]);
       state.shows = shows;
       state.config = config;
+      state.instrumentos = instrumentos.filter((i) => i.activo);
       const guardada = window.MuestraActual.obtener();
       state.showId = shows.some((s) => s.id === guardada) ? guardada : shows[0]?.id ?? null;
 
       renderMuestras();
       el.soloSinCancion.addEventListener('change', () => {
         state.soloSinCancion = el.soloSinCancion.checked;
+        render();
+      });
+      el.soloSinInstrumento.addEventListener('change', () => {
+        state.soloSinInstrumento = el.soloSinInstrumento.checked;
         render();
       });
 
@@ -101,19 +119,21 @@
   function render() {
     const total = state.alumnos.length;
     const faltan = state.sinAsignarIds.size;
-    el.contador.textContent = `Faltan ${faltan} de ${total} sin canción asignada`;
+    const sinInstrumento = state.alumnos.filter(esSinInstrumento).length;
+    el.contador.textContent =
+      `Faltan ${faltan} de ${total} sin canción asignada · ${sinInstrumento} sin instrumento asignado`;
 
-    const visibles = state.soloSinCancion
-      ? state.alumnos.filter((a) => state.sinAsignarIds.has(a.id))
-      : state.alumnos;
+    let visibles = state.alumnos;
+    if (state.soloSinCancion) visibles = visibles.filter((a) => state.sinAsignarIds.has(a.id));
+    if (state.soloSinInstrumento) visibles = visibles.filter(esSinInstrumento);
 
     el.lista.innerHTML = '';
 
     if (visibles.length === 0) {
       const vacio = document.createElement('p');
       vacio.className = 'catalogo__vacio';
-      vacio.textContent = state.soloSinCancion
-        ? 'Todos los alumnos de esta muestra ya están en alguna canción.'
+      vacio.textContent = state.soloSinCancion || state.soloSinInstrumento
+        ? 'No hay alumnos que cumplan este filtro.'
         : 'Todavía no hay alumnos cargados en esta muestra.';
       el.lista.appendChild(vacio);
       return;
@@ -137,6 +157,12 @@
       const badge = document.createElement('span');
       badge.className = 'alumno-fila__sin-cancion';
       badge.textContent = 'sin canción';
+      nombre.appendChild(badge);
+    }
+    if (esSinInstrumento(alumno)) {
+      const badge = document.createElement('span');
+      badge.className = 'alumno-fila__sin-cancion';
+      badge.textContent = 'sin instrumento';
       nombre.appendChild(badge);
     }
     info.appendChild(nombre);
@@ -203,23 +229,102 @@
 
   async function abrirAcciones(alumno) {
     el.dialog.innerHTML = '';
-    const cargando = document.createElement('p');
-    cargando.textContent = 'Cargando…';
-    el.dialog.appendChild(cargando);
+    renderDialogHeader(alumno);
     el.dialog.showModal();
+
+    const cargandoBandas = document.createElement('p');
+    cargandoBandas.className = 'acciones-dialog__vacio';
+    cargandoBandas.textContent = 'Cargando bandas…';
+    el.dialog.appendChild(cargandoBandas);
 
     try {
       const listas = await cargarCancionesConSlots();
-      renderDialogAcciones(alumno, listas);
+      if (!el.dialog.open) return;
+      cargandoBandas.remove();
+      renderDialogBandas(alumno, listas);
     } catch (err) {
-      el.dialog.innerHTML = '';
-      const error = document.createElement('p');
-      error.textContent = `No se pudo cargar: ${err.message}`;
-      el.dialog.appendChild(error);
+      cargandoBandas.textContent = `No se pudo cargar: ${err.message}`;
     }
   }
 
-  function renderDialogAcciones(alumno, listas) {
+  function tituloAlumno(alumno) {
+    return `${alumno.persona?.nombre || 'Sin nombre'} — ${alumno.instrumento?.nombre || ''}`;
+  }
+
+  function renderDialogHeader(alumno) {
+    const titulo = document.createElement('p');
+    titulo.className = 'acciones-dialog__titulo';
+    titulo.id = 'accionesDialogTitulo';
+    titulo.textContent = tituloAlumno(alumno);
+    el.dialog.appendChild(titulo);
+
+    const meta = document.createElement('p');
+    meta.className = 'acciones-dialog__meta';
+    meta.textContent = `profe ${alumno.profesor?.nombre || '—'}`;
+    el.dialog.appendChild(meta);
+
+    if (puedeAsignar()) {
+      const seccionInstrumento = document.createElement('div');
+      seccionInstrumento.className = 'acciones-dialog__seccion';
+      const tituloInstrumento = document.createElement('p');
+      tituloInstrumento.className = 'acciones-dialog__seccion-titulo';
+      tituloInstrumento.textContent = 'Cambiar instrumento';
+      seccionInstrumento.appendChild(tituloInstrumento);
+
+      const fila = document.createElement('div');
+      fila.className = 'acciones-dialog__asignar';
+      const select = document.createElement('select');
+      state.instrumentos.forEach((i) => {
+        const opt = document.createElement('option');
+        opt.value = i.id;
+        opt.textContent = i.nombre;
+        if (i.id === alumno.instrumentoId) opt.selected = true;
+        select.appendChild(opt);
+      });
+      fila.appendChild(select);
+
+      const guardar = document.createElement('button');
+      guardar.type = 'button';
+      guardar.textContent = 'Guardar';
+      guardar.addEventListener('click', () => cambiarInstrumento(alumno, select.value, guardar));
+      fila.appendChild(guardar);
+
+      seccionInstrumento.appendChild(fila);
+      el.dialog.appendChild(seccionInstrumento);
+    }
+
+    const cerrar = document.createElement('button');
+    cerrar.type = 'button';
+    cerrar.className = 'acciones-dialog__cerrar';
+    cerrar.id = 'accionesDialogCerrar';
+    cerrar.textContent = 'Cerrar';
+    cerrar.addEventListener('click', () => el.dialog.close());
+    el.dialog.appendChild(cerrar);
+  }
+
+  async function cambiarInstrumento(alumno, instrumentoId, boton) {
+    if (!instrumentoId || instrumentoId === alumno.instrumentoId) {
+      el.dialog.close();
+      return;
+    }
+    boton.disabled = true;
+    try {
+      const { alumno: actualizado } = await api(`/api/alumnos/${alumno.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ instrumentoId }),
+      });
+      const idx = state.alumnos.findIndex((a) => a.id === alumno.id);
+      if (idx !== -1) state.alumnos[idx] = actualizado;
+      render();
+      el.dialog.close();
+    } catch (err) {
+      boton.disabled = false;
+      alert(err.message);
+    }
+  }
+
+  function renderDialogBandas(alumno, listas) {
     const vacios = [];
     const ocupados = [];
     listas.forEach(({ cancion, slots }) => {
@@ -230,21 +335,12 @@
       });
     });
 
-    el.dialog.innerHTML = '';
-
-    const titulo = document.createElement('p');
-    titulo.className = 'acciones-dialog__titulo';
-    titulo.textContent = `${alumno.persona?.nombre || 'Sin nombre'} — ${alumno.instrumento?.nombre || ''}`;
-    el.dialog.appendChild(titulo);
-
-    const meta = document.createElement('p');
-    meta.className = 'acciones-dialog__meta';
-    meta.textContent = `profe ${alumno.profesor?.nombre || '—'}`;
-    el.dialog.appendChild(meta);
+    const cerrar = document.getElementById('accionesDialogCerrar');
+    el.dialog.querySelectorAll('.acciones-dialog__banda-seccion').forEach((n) => n.remove());
 
     if (esAdmin()) {
       const seccionParticipa = document.createElement('div');
-      seccionParticipa.className = 'acciones-dialog__seccion';
+      seccionParticipa.className = 'acciones-dialog__seccion acciones-dialog__banda-seccion';
       const label = document.createElement('label');
       label.className = 'acciones-dialog__toggle';
       const check = document.createElement('input');
@@ -254,11 +350,11 @@
       label.appendChild(check);
       label.appendChild(document.createTextNode(' Participa de la muestra'));
       seccionParticipa.appendChild(label);
-      el.dialog.appendChild(seccionParticipa);
+      el.dialog.insertBefore(seccionParticipa, cerrar);
     }
 
     const seccionOcupa = document.createElement('div');
-    seccionOcupa.className = 'acciones-dialog__seccion';
+    seccionOcupa.className = 'acciones-dialog__seccion acciones-dialog__banda-seccion';
     const tituloOcupa = document.createElement('p');
     tituloOcupa.className = 'acciones-dialog__seccion-titulo';
     tituloOcupa.textContent = 'En estas canciones';
@@ -289,11 +385,11 @@
       seccionOcupa.appendChild(fila);
     });
 
-    el.dialog.appendChild(seccionOcupa);
+    el.dialog.insertBefore(seccionOcupa, cerrar);
 
     if (puedeAsignar()) {
       const seccionAsignar = document.createElement('div');
-      seccionAsignar.className = 'acciones-dialog__seccion';
+      seccionAsignar.className = 'acciones-dialog__seccion acciones-dialog__banda-seccion';
       const tituloAsignar = document.createElement('p');
       tituloAsignar.className = 'acciones-dialog__seccion-titulo';
       tituloAsignar.textContent = 'Asignar a una banda';
@@ -325,15 +421,8 @@
         seccionAsignar.appendChild(fila);
       }
 
-      el.dialog.appendChild(seccionAsignar);
+      el.dialog.insertBefore(seccionAsignar, cerrar);
     }
-
-    const cerrar = document.createElement('button');
-    cerrar.type = 'button';
-    cerrar.className = 'acciones-dialog__cerrar';
-    cerrar.textContent = 'Cerrar';
-    cerrar.addEventListener('click', () => el.dialog.close());
-    el.dialog.appendChild(cerrar);
   }
 
   async function cambiarParticipa(alumno, participa) {
@@ -361,7 +450,7 @@
       state.sinAsignarIds.delete(alumno.id);
       render();
       const listas = await cargarCancionesConSlots();
-      renderDialogAcciones(alumno, listas);
+      renderDialogBandas(alumno, listas);
     } catch (err) {
       alert(err.message);
     }
@@ -380,7 +469,7 @@
       state.sinAsignarIds = new Set(sinAsignar.map((a) => a.alumnoId));
       render();
       const listas = await cargarCancionesConSlots();
-      renderDialogAcciones(alumno, listas);
+      renderDialogBandas(alumno, listas);
     } catch (err) {
       alert(err.message);
     }

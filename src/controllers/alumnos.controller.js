@@ -146,13 +146,13 @@ async function eliminar(req, res, next) {
 
 async function importarPreview(req, res, next) {
   try {
-    const { showId, csv } = req.body || {};
-    if (!showId || !csv) {
-      return res.status(400).json({ error: 'showId y csv son requeridos' });
+    const { csv } = req.body || {};
+    if (!csv) {
+      return res.status(400).json({ error: 'csv es requerido' });
     }
 
     const { columnas, filas } = parsearCSV(csv);
-    const requeridas = ['nombre', 'instrumento', 'profesor'];
+    const requeridas = ['nombre', 'instrumento', 'profesor', 'muestra'];
     const faltantes = requeridas.filter((c) => !columnas.includes(c));
     if (faltantes.length > 0) {
       return res.status(400).json({ error: `Faltan columnas en el CSV: ${faltantes.join(', ')}` });
@@ -161,17 +161,21 @@ async function importarPreview(req, res, next) {
     const idxNombre = columnas.indexOf('nombre');
     const idxInstrumento = columnas.indexOf('instrumento');
     const idxProfesor = columnas.indexOf('profesor');
+    const idxMuestra = columnas.indexOf('muestra');
 
     const [
+      { data: shows, error: errorShows },
       { data: instrumentos, error: errorInstr },
       { data: profesores, error: errorProf },
       { data: personas, error: errorPersonas },
     ] = await Promise.all([
+      supabase.from('muestra_shows').select('id, nombre'),
       supabase.from('muestra_instrumentos').select('id, nombre').eq('activo', true),
       supabase.from('muestra_profesores').select('id, nombre').eq('activo', true),
-      supabase.from('muestra_personas').select('id, nombre').eq('show_id', showId),
+      supabase.from('muestra_personas').select('id, nombre, show_id'),
     ]);
 
+    if (errorShows) return next(errorShows);
     if (errorInstr) return next(errorInstr);
     if (errorProf) return next(errorProf);
     if (errorPersonas) return next(errorPersonas);
@@ -183,6 +187,7 @@ async function importarPreview(req, res, next) {
       const nombre = fila[idxNombre] || '';
       const instrumentoNombre = fila[idxInstrumento] || '';
       const profesorNombre = fila[idxProfesor] || '';
+      const muestraNombre = fila[idxMuestra] || '';
       const errores = [];
 
       if (!nombre) errores.push('Falta el nombre');
@@ -193,9 +198,12 @@ async function importarPreview(req, res, next) {
       const profesor = buscarPorNombre(profesores, profesorNombre);
       if (!profesor) errores.push(`Profesor "${profesorNombre}" no existe`);
 
-      const coincidencias = nombre
+      const show = buscarPorNombre(shows, muestraNombre);
+      if (!show) errores.push(`Muestra "${muestraNombre}" no existe`);
+
+      const coincidencias = nombre && show
         ? personas
-            .filter((p) => normalizarTexto(p.nombre) === normalizarTexto(nombre))
+            .filter((p) => p.show_id === show.id && normalizarTexto(p.nombre) === normalizarTexto(nombre))
             .map((p) => ({ id: p.id, nombre: p.nombre }))
         : [];
 
@@ -204,8 +212,10 @@ async function importarPreview(req, res, next) {
         nombre,
         instrumentoNombre,
         profesorNombre,
+        muestraNombre,
         instrumentoId: instrumento?.id || null,
         profesorId: profesor?.id || null,
+        showId: show?.id || null,
         coincidencias,
         errores,
       };
@@ -219,17 +229,17 @@ async function importarPreview(req, res, next) {
 
 async function importarConfirmar(req, res, next) {
   try {
-    const { showId, filas } = req.body || {};
-    if (!showId || !Array.isArray(filas) || filas.length === 0) {
-      return res.status(400).json({ error: 'showId y filas son requeridos' });
+    const { filas } = req.body || {};
+    if (!Array.isArray(filas) || filas.length === 0) {
+      return res.status(400).json({ error: 'filas es requerido' });
     }
 
     const resultados = [];
 
     for (const fila of filas) {
-      const { nombre, instrumentoId, profesorId, personaId } = fila || {};
+      const { nombre, instrumentoId, profesorId, showId, personaId } = fila || {};
 
-      if (!instrumentoId || !profesorId || (!personaId && !nombre)) {
+      if (!instrumentoId || !profesorId || !showId || (!personaId && !nombre)) {
         resultados.push({ ok: false, error: 'Fila incompleta', fila });
         continue;
       }

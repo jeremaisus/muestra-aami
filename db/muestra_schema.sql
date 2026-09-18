@@ -37,7 +37,8 @@ insert into muestra_instrumentos (nombre, color, orden) values
   ('Bajo',               '#3B6FB5', 3),
   ('Batería',            '#C2A03A', 4),
   ('Piano',              '#8B5FBF', 5),
-  ('Iniciación musical', '#5A9FA8', 6);
+  ('Iniciación musical', '#5A9FA8', 6),
+  ('Sin asignar',        '#8A908C', 7);
 
 
 -- ------------------------------------------------------------
