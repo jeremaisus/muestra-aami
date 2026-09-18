@@ -47,6 +47,7 @@
 }
 
 .alta-cancion__campo--artista,
+.alta-cancion__campo--pais,
 .alta-cancion__campo--tonalidad {
   flex: 1 1 120px;
 }
@@ -81,10 +82,42 @@
 }
 
 .catalogo__fila {
-  display: block;
-  padding: var(--space-3) var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
   border-bottom: 1px solid var(--color-line);
+}
+
+.catalogo__info {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-3) var(--space-4);
   text-decoration: none;
+  color: var(--color-text);
+}
+
+.catalogo__mover {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding-right: var(--space-4);
+}
+
+.catalogo__mover label {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.catalogo__mover select {
+  min-height: var(--touch-min);
+  padding: 0 var(--space-1);
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  font-family: var(--font-base);
+  font-size: 13px;
   color: var(--color-text);
 }
 

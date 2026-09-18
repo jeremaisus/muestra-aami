@@ -50,11 +50,11 @@
         api('/api/config'),
         api('/api/instrumentos'),
       ]);
-      state.shows = shows;
+      state.shows = window.MuestraActual.paraSeleccion(shows);
       state.config = config;
       state.instrumentos = instrumentos.filter((i) => i.activo);
       const guardada = window.MuestraActual.obtener();
-      state.showId = shows.some((s) => s.id === guardada) ? guardada : shows[0]?.id ?? null;
+      state.showId = state.shows.some((s) => s.id === guardada) ? guardada : state.shows[0]?.id ?? null;
 
       renderMuestras();
       el.soloSinCancion.addEventListener('change', () => {

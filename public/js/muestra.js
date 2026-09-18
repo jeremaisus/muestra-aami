@@ -20,5 +20,13 @@ window.MuestraActual = (() => {
     }
   }
 
-  return { obtener, guardar };
+  // "Sin asignar" es el destino de canciones sin clasificar: no tiene
+  // alumnos ni horarios, así que no se ofrece como pestaña en ninguna
+  // pantalla organizada por alumnos (grilla, carga rápida, alumnos,
+  // dashboard, programa). Solo Canciones la muestra, sin este filtro.
+  function paraSeleccion(shows) {
+    return shows.filter((s) => s.nombre !== 'Sin asignar');
+  }
+
+  return { obtener, guardar, paraSeleccion };
 })();

@@ -27,6 +27,14 @@ su propio catálogo de canciones y su propio orden de programa.
 - Un **alumno** pertenece a una sola muestra.
 - Un **profesor** puede participar en varias.
 
+Existe una cuarta fila en `muestra_shows`, **Sin asignar**: es el destino de
+las canciones que todavía no se clasificaron (no de alumnos). No tiene
+grilla, ni horarios, ni alumnos — la app la excluye como pestaña de
+cualquier pantalla organizada por alumnos (grilla, carga rápida, alumnos,
+dashboard, programa) y solo la muestra en Canciones, donde funciona como
+lista de pendientes. Desde el listado de canciones, cada una se puede mover
+a Niños/Adolescentes/Adultos con un selector directo por fila.
+
 ### Personas vs. alumnos
 Un alumno que estudia dos instrumentos (ej. Renata: canto y piano) es:
 - **una** fila en `muestra_personas`
@@ -73,6 +81,16 @@ Cada instrumento tiene un **color fijo**, usado de forma consistente en toda la 
   observaciones para los recortes o cambios de arreglo (ej. "sin el estribillo
   final"). Esto es distinto de las notas: acá va la versión acordada, en las notas
   va la discusión.
+- Cada canción registra también el **país** de origen del tema o del arreglo.
+  En el listado y en la ficha se muestra como `Título — Artista (País)`
+  (ej. "Recordándote — Milo J (Argentina)").
+- **Administración puede editar** título, artista, país, tonalidad y
+  observaciones directamente desde la ficha, sin navegar a otra pantalla —
+  pensado para corregir errores de carga sin perder los alumnos ya asignados
+  a los slots (que se pierden si se borra y se vuelve a crear la canción). Si
+  el nuevo título queda duplicado con otra canción de la misma muestra,
+  mismo aviso que en el alta. Los profesores ven la ficha en modo lectura;
+  su única forma de escritura ahí son las notas.
 
 ### Detección de duplicados
 Es la razón de existir del proyecto. Al cargar una canción se normaliza el título
@@ -144,15 +162,20 @@ el 30 de octubre"), para que nadie descubra por prueba y error que no puede edit
 2. **Grilla semanal** (por muestra). Desktop: tabla día × franja horaria.
    Mobile: selector de día arriba + columna única scrolleable.
    Cada celda con color de instrumento. Filtros por instrumento y profesor.
-3. **Detalle de canción** — título, artista, tonalidad, observaciones de arreglo,
-   **lista de links de Drive con etiqueta**, slots de la banda y panel de notas
-   al costado (abajo en mobile). Los links se abren en pestaña nueva.
+3. **Detalle de canción** — título, artista, país, tonalidad, observaciones de
+   arreglo, **lista de links de Drive con etiqueta**, slots de la banda y
+   panel de notas al costado (abajo en mobile). Los links se abren en
+   pestaña nueva. Administración puede editar título/artista/país/tonalidad/
+   observaciones sin salir de la ficha.
 4. **Alumnos** — listado, filtros "sin canción asignada" y "sin instrumento
    asignado" (lista de pendientes para corregir el instrumento de una
    importación masiva), contador `faltan N de M`. Desde el popup de
    acciones de cada fila se puede cambiar el instrumento en un paso.
-5. **Canciones** — catálogo por muestra, con aviso de duplicados y acceso directo
-   a la carpeta madre de Drive desde el encabezado.
+5. **Canciones** — catálogo por muestra (incluye la muestra administrativa
+   "Sin asignar", que funciona como lista de pendientes de clasificación),
+   con aviso de duplicados, acceso directo a la carpeta madre de Drive desde
+   el encabezado, y un selector "Mover a" por fila para reclasificar una
+   canción a Niños/Adolescentes/Adultos sin abrir otra pantalla.
 6. **Dashboard de faltantes** — vista `muestra_v_faltantes`. Qué bandas necesitan
    qué instrumento. Es la pantalla que más van a usar los profesores.
 7. **Orden del programa** — reordenar los números de cada muestra.
@@ -314,18 +337,25 @@ Pegar esto tal cual antes de generar el primer componente:
       persona no puede ocupar dos slots de la misma canción, slot vacío
       vs. crear uno nuevo según permisos). Evita tener que ir a la pantalla
       de canciones para asignar desde el horario.
-- [x] Canciones: catálogo por muestra con alta + aviso de duplicado, y
-      ahora también tonalidad y observaciones visibles directo en el
-      listado (`canciones.html`). Al crear una canción se generan
-      automáticamente los slots vacíos de todos los instrumentos activos
-      del catálogo (salvo Iniciación musical), listos para asignar. Ficha
-      de detalle (`cancion.html`): tonalidad, observaciones, links de
-      Drive, banda con aviso de instrumento repetido, selector de alumno
-      ya filtrado por el instrumento del slot (menos pasos para asignar),
-      `se_busca`, toggle de interés para profesores y — para admin — quién
-      se ofreció por cada slot vacío ("Se ofrecieron: ..."), más panel de
-      notas embebido (según ESTADO.md, no como pantalla aparte; edición de
-      la nota propia dentro de los 15 minutos). Un profesor solo puede
+- [x] Canciones: catálogo por muestra (incluye "Sin asignar") con alta +
+      aviso de duplicado, formato `Título — Artista (País)`, tonalidad y
+      observaciones visibles directo en el listado (`canciones.html`), y un
+      selector "Mover a" por fila (solo admin) para reclasificar entre
+      Niños/Adolescentes/Adultos sin abrir la ficha. Al crear una canción se
+      generan automáticamente los slots vacíos de todos los instrumentos
+      activos del catálogo (salvo Iniciación musical y Sin asignar), listos
+      para asignar. Ficha de detalle (`cancion.html`): título, artista,
+      país, tonalidad, observaciones, links de Drive, banda con aviso de
+      instrumento repetido, selector de alumno ya filtrado por el
+      instrumento del slot (menos pasos para asignar), `se_busca`, toggle de
+      interés para profesores y — para admin — quién se ofreció por cada
+      slot vacío ("Se ofrecieron: ..."), más panel de notas embebido (según
+      ESTADO.md, no como pantalla aparte; edición de la nota propia dentro
+      de los 15 minutos). Administración puede editar título/artista/país/
+      tonalidad/observaciones desde la ficha sin navegar a otra pantalla —
+      corrige errores de carga sin perder los alumnos ya asignados a los
+      slots — con el mismo aviso de duplicado que en el alta; los
+      profesores ven la ficha en modo lectura. Un profesor solo puede
       ocupar un slot vacío; reasignar o vaciar un slot ya ocupado es
       exclusivo de administración (ver `PATCH /api/slots/:id`). Un
       profesor logueado ve la grilla completa de la escuela y puede
@@ -377,6 +407,23 @@ Pegar esto tal cual antes de generar el primer componente:
   profesores/muestras. Sigue pendiente pasar por `alumnos.html` con el
   filtro "sin instrumento asignado" para asignarle a cada uno su
   instrumento real.
+- [x] Columna `pais` en `muestra_canciones` (`db/muestra_schema.sql` es la
+  fuente de verdad, pero el proyecto no tiene forma automatizada de correr
+  DDL contra Supabase — no hay `pg` ni Supabase CLI en el repo, el cliente
+  de `@supabase/supabase-js` con la service key solo hace CRUD vía REST. Un
+  `ALTER TABLE` como este hay que correrlo a mano en el SQL editor de
+  Supabase cada vez que el esquema cambia de forma; los inserts de datos
+  (una fila nueva en `muestra_shows` o `muestra_instrumentos`, por ejemplo)
+  sí se pueden hacer con la service key sin pasar por ahí).
+- [x] Repertorio: 22 canciones cargadas en la muestra "Sin asignar" con el
+  formato título/artista/país/tonalidad (`tonalidad = "Original"` donde no
+  hay una tonalidad distinta a la del original), vía `POST /api/canciones`
+  real — así se generaron también los slots automáticos de cada una. Quedan
+  ahí hasta que administración las reclasifique con el selector "Mover a"
+  en `canciones.html`. Ojo: la fila "Back to Black" vino con artista AC/DC
+  y país Austria tal como se pasó — no lo corregí porque no me consta cuál
+  de los dos datos está mal (podría ser el título, el artista o el país);
+  conviene revisarlo a mano.
 - Fechas de las tres muestras
 - La carga real que ya estaba en curso en la muestra Niños (Dario, Ruben,
   la canción "La Vida") se dejó intacta.

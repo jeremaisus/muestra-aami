@@ -18,7 +18,6 @@
     estadoCarga: document.getElementById('estadoCarga'),
     contenido: document.getElementById('contenido'),
     titulo: document.getElementById('titulo'),
-    artista: document.getElementById('artista'),
     estadoBotones: document.getElementById('estadoBotones'),
     estadoTexto: document.getElementById('estadoTexto'),
     metaTonalidad: document.getElementById('metaTonalidad'),
@@ -26,8 +25,13 @@
     metaLectura: document.getElementById('metaLectura'),
     botonEditarMeta: document.getElementById('botonEditarMeta'),
     formMeta: document.getElementById('formMeta'),
+    inputTitulo: document.getElementById('inputTitulo'),
+    inputArtista: document.getElementById('inputArtista'),
+    inputPais: document.getElementById('inputPais'),
     inputTonalidad: document.getElementById('inputTonalidad'),
     inputObservaciones: document.getElementById('inputObservaciones'),
+    avisoDuplicadoEdicion: document.getElementById('avisoDuplicadoEdicion'),
+    botonGuardarMeta: document.getElementById('botonGuardarMeta'),
     botonCancelarMeta: document.getElementById('botonCancelarMeta'),
     listaLinks: document.getElementById('listaLinks'),
     formLink: document.getElementById('formLink'),
@@ -56,6 +60,14 @@
 
   function esAdmin() {
     return state.acceso.rol === 'admin';
+  }
+
+  // "Título — Artista (País)", igual que en el listado de canciones.
+  function formatoCancion(cancion) {
+    let texto = cancion.titulo;
+    if (cancion.artista) texto += ` — ${cancion.artista}`;
+    if (cancion.pais) texto += ` (${cancion.pais})`;
+    return texto;
   }
 
   // Admin siempre puede tocar cualquier slot. Un profesor, cuando el
@@ -137,9 +149,7 @@
   // --- Encabezado + estado -------------------------------------------
 
   function renderEncabezado() {
-    el.titulo.textContent = state.cancion.titulo;
-    el.artista.textContent = state.cancion.artista || '';
-    el.artista.hidden = !state.cancion.artista;
+    el.titulo.textContent = formatoCancion(state.cancion);
 
     if (esAdmin()) {
       el.estadoBotones.hidden = false;
@@ -180,8 +190,13 @@
 
     el.botonEditarMeta.hidden = false;
     el.botonEditarMeta.onclick = () => {
+      el.inputTitulo.value = state.cancion.titulo || '';
+      el.inputArtista.value = state.cancion.artista || '';
+      el.inputPais.value = state.cancion.pais || '';
       el.inputTonalidad.value = state.cancion.tonalidad || '';
       el.inputObservaciones.value = state.cancion.observaciones || '';
+      el.avisoDuplicadoEdicion.hidden = true;
+      el.botonGuardarMeta.disabled = false;
       el.metaLectura.hidden = true;
       el.botonEditarMeta.hidden = true;
       el.formMeta.hidden = false;
@@ -193,6 +208,8 @@
       el.botonEditarMeta.hidden = false;
     };
 
+    el.inputTitulo.onblur = chequearDuplicadoEdicion;
+
     el.formMeta.onsubmit = async (ev) => {
       ev.preventDefault();
       try {
@@ -200,6 +217,9 @@
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            titulo: el.inputTitulo.value.trim(),
+            artista: el.inputArtista.value.trim() || null,
+            pais: el.inputPais.value.trim() || null,
             tonalidad: el.inputTonalidad.value.trim() || null,
             observaciones: el.inputObservaciones.value.trim() || null,
           }),
@@ -208,11 +228,32 @@
         el.formMeta.hidden = true;
         el.metaLectura.hidden = false;
         el.botonEditarMeta.hidden = false;
+        renderEncabezado();
         renderMeta();
       } catch (err) {
-        alertar(err.message);
+        el.avisoDuplicadoEdicion.textContent = err.message;
+        el.avisoDuplicadoEdicion.hidden = false;
       }
     };
+  }
+
+  async function chequearDuplicadoEdicion() {
+    const titulo = el.inputTitulo.value.trim();
+    el.avisoDuplicadoEdicion.hidden = true;
+    el.botonGuardarMeta.disabled = false;
+    if (!titulo) return;
+
+    try {
+      const params = new URLSearchParams({ showId: state.cancion.showId, titulo, excludeId: cancionId });
+      const { duplicado, cancion } = await api(`/api/canciones/check-duplicado?${params}`);
+      if (duplicado) {
+        el.avisoDuplicadoEdicion.textContent = `Ya existe "${cancion.titulo}" en esta muestra.`;
+        el.avisoDuplicadoEdicion.hidden = false;
+        el.botonGuardarMeta.disabled = true;
+      }
+    } catch {
+      /* si falla el chequeo, no bloqueamos: el índice único del backend igual protege */
+    }
   }
 
   // --- Links de Drive --------------------------------------------------

@@ -8,6 +8,7 @@ function serialize(c) {
     showId: c.show_id,
     titulo: c.titulo,
     artista: c.artista,
+    pais: c.pais,
     tonalidad: c.tonalidad,
     observaciones: c.observaciones,
     estado: c.estado,
@@ -53,21 +54,26 @@ async function obtener(req, res, next) {
 
 // Comparación exacta sobre titulo_norm: mismo criterio que el índice único
 // del esquema (unique (show_id, titulo_norm)). No es fuzzy matching.
+// excludeId se usa al editar: para que una canción no se marque duplicada
+// contra sí misma cuando el título no cambió.
 async function checkDuplicado(req, res, next) {
   try {
-    const { showId, titulo } = req.query;
+    const { showId, titulo, excludeId } = req.query;
     if (!showId || !titulo) {
       return res.status(400).json({ error: 'showId y titulo son requeridos' });
     }
 
     const tituloNorm = normalizarTitulo(titulo);
 
-    const { data, error } = await supabase
+    let query = supabase
       .from('muestra_canciones')
       .select('id, titulo')
       .eq('show_id', showId)
-      .eq('titulo_norm', tituloNorm)
-      .maybeSingle();
+      .eq('titulo_norm', tituloNorm);
+
+    if (excludeId) query = query.neq('id', excludeId);
+
+    const { data, error } = await query.maybeSingle();
 
     if (error) return next(error);
 
@@ -79,7 +85,7 @@ async function checkDuplicado(req, res, next) {
 
 async function crear(req, res, next) {
   try {
-    const { showId, titulo, artista, tonalidad, observaciones } = req.body || {};
+    const { showId, titulo, artista, pais, tonalidad, observaciones } = req.body || {};
     if (!showId || !titulo) {
       return res.status(400).json({ error: 'showId y titulo son requeridos' });
     }
@@ -91,6 +97,7 @@ async function crear(req, res, next) {
         titulo,
         titulo_norm: normalizarTitulo(titulo),
         artista: artista ?? null,
+        pais: pais ?? null,
         tonalidad: tonalidad ?? null,
         observaciones: observaciones ?? null,
       })
@@ -144,9 +151,11 @@ async function actualizar(req, res, next) {
       cambios.titulo_norm = normalizarTitulo(body.titulo);
     }
     if (body.artista !== undefined) cambios.artista = body.artista;
+    if (body.pais !== undefined) cambios.pais = body.pais;
     if (body.tonalidad !== undefined) cambios.tonalidad = body.tonalidad;
     if (body.observaciones !== undefined) cambios.observaciones = body.observaciones;
     if (body.ordenPrograma !== undefined) cambios.orden_programa = body.ordenPrograma;
+    if (body.showId !== undefined) cambios.show_id = body.showId;
 
     if (Object.keys(cambios).length === 0) {
       return res.status(400).json({ error: 'No se enviaron campos para actualizar' });
@@ -162,6 +171,7 @@ async function actualizar(req, res, next) {
     if (error) {
       return manejarErrorPg(error, next, {
         23505: 'Ya existe una canción con un título igual (o muy parecido) en esta muestra',
+        23503: 'showId inválido',
       });
     }
     if (!data) return res.status(404).json({ error: 'Canción no encontrada' });

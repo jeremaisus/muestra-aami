@@ -1,4 +1,6 @@
 (() => {
+  const NOMBRE_SIN_ASIGNAR = 'Sin asignar';
+
   const state = { shows: [], showId: null, canciones: [], config: null, acceso: null };
 
   const el = {
@@ -7,12 +9,25 @@
     formAlta: document.getElementById('formAlta'),
     titulo: document.getElementById('titulo'),
     artista: document.getElementById('artista'),
+    pais: document.getElementById('pais'),
     tonalidad: document.getElementById('tonalidad'),
     botonAlta: document.getElementById('botonAlta'),
     avisoDuplicado: document.getElementById('avisoDuplicado'),
     estadoCarga: document.getElementById('estadoCarga'),
     catalogo: document.getElementById('catalogo'),
   };
+
+  function esAdmin() {
+    return state.acceso.rol === 'admin';
+  }
+
+  // "Título — Artista (País)", igual en el listado y en la ficha.
+  function formatoCancion(cancion) {
+    let texto = cancion.titulo;
+    if (cancion.artista) texto += ` — ${cancion.artista}`;
+    if (cancion.pais) texto += ` (${cancion.pais})`;
+    return texto;
+  }
 
   async function api(path, opciones) {
     const res = await fetch(path, { credentials: 'same-origin', cache: 'no-store', ...opciones });
@@ -106,6 +121,7 @@
           showId: state.showId,
           titulo: el.titulo.value.trim(),
           artista: el.artista.value.trim() || null,
+          pais: el.pais.value.trim() || null,
           tonalidad: el.tonalidad.value.trim() || null,
         }),
       });
@@ -150,22 +166,20 @@
     }
 
     state.canciones.forEach((cancion) => {
-      const fila = document.createElement('a');
+      const fila = document.createElement('div');
       fila.className = 'catalogo__fila';
-      fila.href = `/cancion.html?id=${cancion.id}`;
+
+      const info = document.createElement('a');
+      info.className = 'catalogo__info';
+      info.href = `/cancion.html?id=${cancion.id}`;
 
       const titulo = document.createElement('div');
       titulo.className = 'catalogo__titulo';
-      titulo.textContent = cancion.titulo;
-      fila.appendChild(titulo);
+      titulo.textContent = formatoCancion(cancion);
+      info.appendChild(titulo);
 
       const meta = document.createElement('div');
       meta.className = 'catalogo__meta';
-      if (cancion.artista) {
-        const artista = document.createElement('span');
-        artista.textContent = cancion.artista;
-        meta.appendChild(artista);
-      }
       if (cancion.tonalidad) {
         const tonalidad = document.createElement('span');
         tonalidad.textContent = cancion.tonalidad;
@@ -175,17 +189,80 @@
       estado.className = `catalogo__estado--${cancion.estado}`;
       estado.textContent = cancion.estado === 'completa' ? 'Completa' : 'Incompleta';
       meta.appendChild(estado);
-      fila.appendChild(meta);
+      info.appendChild(meta);
 
       if (cancion.observaciones) {
         const obs = document.createElement('div');
         obs.className = 'catalogo__observaciones';
         obs.textContent = cancion.observaciones;
-        fila.appendChild(obs);
+        info.appendChild(obs);
       }
+
+      fila.appendChild(info);
+
+      if (esAdmin()) fila.appendChild(selectorMover(cancion));
 
       el.catalogo.appendChild(fila);
     });
+  }
+
+  // --- Mover a otra muestra (solo admin) --------------------------------
+
+  function selectorMover(cancion) {
+    const wrap = document.createElement('div');
+    wrap.className = 'catalogo__mover';
+
+    const label = document.createElement('label');
+    label.textContent = 'Mover a';
+    label.setAttribute('for', `mover-${cancion.id}`);
+    wrap.appendChild(label);
+
+    const select = document.createElement('select');
+    select.id = `mover-${cancion.id}`;
+
+    const destinos = state.shows.filter((s) => s.nombre !== NOMBRE_SIN_ASIGNAR);
+    const yaEnDestino = destinos.some((s) => s.id === cancion.showId);
+
+    if (!yaEnDestino) {
+      const placeholder = document.createElement('option');
+      placeholder.value = '';
+      placeholder.textContent = '— elegir —';
+      placeholder.disabled = true;
+      placeholder.selected = true;
+      select.appendChild(placeholder);
+    }
+
+    destinos.forEach((show) => {
+      const opt = document.createElement('option');
+      opt.value = show.id;
+      opt.textContent = show.nombre;
+      if (show.id === cancion.showId) opt.selected = true;
+      select.appendChild(opt);
+    });
+
+    // Evita que el click dispare la navegación de .catalogo__info (son
+    // hermanos, pero el select ocupa la misma fila).
+    select.addEventListener('click', (ev) => ev.stopPropagation());
+    select.addEventListener('change', () => moverCancion(cancion, select.value));
+
+    wrap.appendChild(select);
+    return wrap;
+  }
+
+  async function moverCancion(cancion, showId) {
+    if (!showId || showId === cancion.showId) return;
+    try {
+      await api(`/api/canciones/${cancion.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ showId }),
+      });
+      state.canciones = state.canciones.filter((c) => c.id !== cancion.id);
+      render();
+    } catch (err) {
+      alert(err.message);
+      await cargarCanciones();
+    }
   }
 
   init();

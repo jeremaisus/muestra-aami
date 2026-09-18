@@ -16,7 +16,12 @@ create table muestra_shows (
 );
 
 insert into muestra_shows (nombre, orden) values
-  ('Niños', 1), ('Adolescentes', 2), ('Adultos', 3);
+  ('Niños', 1), ('Adolescentes', 2), ('Adultos', 3), ('Sin asignar', 4);
+
+-- "Sin asignar" es el destino de las canciones que todavía no se
+-- clasificaron en Niños/Adolescentes/Adultos. No tiene alumnos ni
+-- horarios: la app la excluye de la grilla semanal y de cualquier
+-- pantalla organizada por alumnos, y solo la muestra en Canciones.
 
 
 -- ------------------------------------------------------------
@@ -134,6 +139,7 @@ create table muestra_canciones (
   titulo         text not null,
   titulo_norm    text not null,
   artista        text,
+  pais           text,                    -- país de origen del tema o del arreglo
   tonalidad      text,                    -- tonalidad en la que se hace, si difiere del original
   observaciones  text,                    -- ej. 'sin el estribillo final'
   estado         text not null default 'incompleta'

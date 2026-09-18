@@ -25,9 +25,9 @@
 
     try {
       const { shows } = await api('/api/shows');
-      state.shows = shows;
+      state.shows = window.MuestraActual.paraSeleccion(shows);
       const guardada = window.MuestraActual.obtener();
-      state.showId = shows.some((s) => s.id === guardada) ? guardada : shows[0]?.id ?? null;
+      state.showId = state.shows.some((s) => s.id === guardada) ? guardada : state.shows[0]?.id ?? null;
 
       renderMuestras();
       actualizarLinkExportar();

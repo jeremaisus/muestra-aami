@@ -21,12 +21,6 @@
   margin: 0;
 }
 
-.ficha__artista {
-  font-size: 16px;
-  color: var(--color-text-secondary);
-  margin: var(--space-1) 0 0;
-}
-
 .ficha__estado {
   display: flex;
   gap: var(--space-2);
@@ -130,6 +124,12 @@
 .ficha__meta-form textarea {
   min-height: 72px;
   resize: vertical;
+}
+
+.ficha__meta-aviso {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .ficha__meta-form-acciones {
