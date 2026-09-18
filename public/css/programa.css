@@ -11,9 +11,9 @@
 }
 
 .programa__numero {
-  font-family: var(--font-condensed);
-  font-weight: 600;
-  font-size: 20px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
   color: var(--color-text-secondary);
   min-width: 28px;
   text-align: right;
@@ -24,9 +24,9 @@
 }
 
 .programa__titulo {
-  font-family: var(--font-condensed);
-  font-weight: 500;
-  font-size: 17px;
+  font-family: var(--font-base);
+  font-weight: 600;
+  font-size: 16px;
 }
 
 .programa__meta {
@@ -52,9 +52,9 @@
 .programa__acciones button {
   min-width: var(--touch-min);
   min-height: var(--touch-min);
-  background: none;
+  background: var(--color-surface-sunken);
   border: 1px solid var(--color-line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   font-family: var(--font-base);
   font-size: 13px;
   color: var(--color-text);

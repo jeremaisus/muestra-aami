@@ -12,31 +12,33 @@
 <body>
   <div id="navPrincipal"></div>
 
-  <p class="cerrado-aviso" id="cerradoAviso" hidden>
-    La carga de horarios está cerrada por administración. Podés ver el estado, pero no asignar ni quitar.
-  </p>
+  <div class="panel">
+    <p class="cerrado-aviso" id="cerradoAviso" hidden>
+      La carga de horarios está cerrada por administración. Podés ver el estado, pero no asignar ni quitar.
+    </p>
 
-  <div class="asignar__filtros">
-    <div class="asignar__campo" id="campoProfesor" hidden>
-      <label for="selectProfesor">Profesor</label>
-      <select id="selectProfesor">
-        <option value="">Todos</option>
-      </select>
+    <div class="asignar__filtros">
+      <div class="asignar__campo" id="campoProfesor" hidden>
+        <label for="selectProfesor">Profesor</label>
+        <select id="selectProfesor">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div class="asignar__campo asignar__campo--buscar">
+        <label for="buscador">Buscar por nombre</label>
+        <input type="search" id="buscador" placeholder="Nombre del alumno" autocomplete="off" />
+      </div>
+      <label class="alumnos__toggle">
+        <input type="checkbox" id="mostrarAsignados" />
+        Mostrar también asignados
+      </label>
+      <span class="alumnos__contador" id="contador"></span>
     </div>
-    <div class="asignar__campo asignar__campo--buscar">
-      <label for="buscador">Buscar por nombre</label>
-      <input type="search" id="buscador" placeholder="Nombre del alumno" autocomplete="off" />
-    </div>
-    <label class="alumnos__toggle">
-      <input type="checkbox" id="mostrarAsignados" />
-      Mostrar también asignados
-    </label>
-    <span class="alumnos__contador" id="contador"></span>
+
+    <p class="estado-carga" id="estadoCarga" hidden></p>
+
+    <main id="lista" aria-live="polite"></main>
   </div>
-
-  <p class="estado-carga" id="estadoCarga" hidden></p>
-
-  <main id="lista" aria-live="polite"></main>
 
   <script src="/js/auth.js"></script>
   <script src="/js/nav.js"></script>

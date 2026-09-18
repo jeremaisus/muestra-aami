@@ -8,9 +8,10 @@
 }
 
 .bloque-actual__titulo {
-  font-family: var(--font-condensed);
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-weight: 700;
   font-size: 18px;
+  letter-spacing: var(--tracking-heading);
   margin: 0 0 var(--space-2);
 }
 
@@ -31,8 +32,8 @@
 }
 
 .roster__item span {
-  font-family: var(--font-condensed);
-  font-weight: 500;
+  font-family: var(--font-base);
+  font-weight: 600;
   font-size: 16px;
 }
 
@@ -73,9 +74,10 @@
 .form-alumno__campo input,
 .form-alumno__campo select {
   min-height: var(--touch-min);
-  padding: 0 var(--space-2);
+  padding: 0 var(--space-3);
+  background: var(--color-surface-sunken);
   border: 1px solid var(--color-line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   font-family: var(--font-base);
   font-size: 16px;
 }
@@ -87,11 +89,11 @@
 .form-alumno button[type="submit"] {
   min-height: var(--touch-min);
   padding: 0 var(--space-4);
-  background: var(--color-text);
-  color: var(--color-surface);
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
   border: none;
-  border-radius: var(--radius);
-  font-family: var(--font-condensed);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-base);
   font-weight: 600;
   font-size: 15px;
   cursor: pointer;
@@ -112,7 +114,7 @@
 }
 
 .duracion__titulo {
-  font-family: var(--font-condensed);
+  font-family: var(--font-base);
   font-weight: 600;
   font-size: 15px;
   margin: 0 0 var(--space-2);
@@ -127,17 +129,19 @@
 .duracion__boton {
   flex: 1;
   min-height: 64px;
-  background: var(--color-surface);
+  background: var(--color-surface-sunken);
   border: 1px solid var(--color-line);
-  border-radius: var(--radius);
-  font-family: var(--font-condensed);
+  border-radius: var(--radius-md);
+  font-family: var(--font-base);
   font-weight: 600;
   font-size: 20px;
   cursor: pointer;
 }
 
 .duracion__boton--sugerido {
-  border: 2px solid var(--color-text);
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-accent-ink);
 }
 
 .duracion__otra {
@@ -150,19 +154,21 @@
 
 .duracion__otra select {
   min-height: var(--touch-min);
+  padding: 0 var(--space-2);
+  background: var(--color-surface-sunken);
   border: 1px solid var(--color-line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   font-size: 14px;
 }
 
 .duracion__otra button {
   min-height: var(--touch-min);
-  padding: 0 var(--space-2);
+  padding: 0 var(--space-3);
   background: none;
   border: 1px solid var(--color-line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-pill);
   font-size: 13px;
-  color: var(--color-text);
+  color: var(--color-text-secondary);
   cursor: pointer;
 }
 
@@ -180,7 +186,7 @@
 }
 
 .import-csv summary {
-  font-family: var(--font-condensed);
+  font-family: var(--font-base);
   font-weight: 600;
   font-size: 16px;
   cursor: pointer;
@@ -191,9 +197,10 @@
   width: 100%;
   min-height: 100px;
   margin-top: var(--space-2);
-  padding: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface-sunken);
   border: 1px solid var(--color-line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   font-family: monospace;
   font-size: 13px;
   resize: vertical;
@@ -207,19 +214,19 @@
 
 .import-csv button {
   min-height: var(--touch-min);
-  padding: 0 var(--space-3);
-  background: var(--color-text);
-  color: var(--color-surface);
+  padding: 0 var(--space-4);
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
   border: none;
-  border-radius: var(--radius);
-  font-family: var(--font-condensed);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-base);
   font-weight: 600;
   cursor: pointer;
 }
 
 #botonModelo {
   background: none;
-  color: var(--color-text);
+  color: var(--color-text-secondary);
   border: 1px solid var(--color-line);
   margin-bottom: var(--space-2);
 }
@@ -238,8 +245,9 @@
 
 .import-csv th {
   text-align: left;
-  font-family: var(--font-condensed);
+  font-family: var(--font-base);
   font-weight: 600;
+  color: var(--color-text-secondary);
   border-bottom: 1px solid var(--color-line);
   padding: var(--space-1) var(--space-2) var(--space-1) 0;
 }

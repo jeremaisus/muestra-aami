@@ -1,5 +1,9 @@
 .ficha {
-  padding: var(--space-4);
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-surface);
+  margin: 0 var(--space-2) var(--space-2);
+  padding: var(--space-4) var(--space-5);
 }
 
 .ficha__volver {
@@ -15,9 +19,10 @@
 }
 
 .ficha__titulo {
-  font-family: var(--font-condensed);
-  font-weight: 600;
-  font-size: 28px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 24px;
+  letter-spacing: var(--tracking-heading);
   margin: 0;
 }
 
@@ -30,10 +35,10 @@
 .ficha__estado button {
   min-height: var(--touch-min);
   padding: 0 var(--space-3);
-  background: var(--color-surface);
+  background: var(--color-surface-sunken);
   border: 1px solid var(--color-line);
-  border-radius: var(--radius);
-  font-family: var(--font-condensed);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-base);
   font-weight: 500;
   font-size: 14px;
   color: var(--color-text-secondary);
@@ -91,13 +96,20 @@
 .ficha__meta button {
   align-self: flex-start;
   min-height: var(--touch-min);
-  padding: 0 var(--space-2);
+  padding: 0 var(--space-3);
   background: none;
-  border: none;
-  font-size: 14px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-base);
+  font-weight: 500;
+  font-size: 13px;
   color: var(--color-text-secondary);
-  text-decoration: underline;
   cursor: pointer;
+}
+
+.ficha__meta button:hover {
+  border-color: var(--color-text-secondary);
+  color: var(--color-text);
 }
 
 .ficha__meta-form {
@@ -113,10 +125,10 @@
 .ficha__meta-form input,
 .ficha__meta-form textarea {
   width: 100%;
-  padding: var(--space-2);
-  background: var(--color-surface);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface-sunken);
   border: 1px solid var(--color-line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   font-family: var(--font-base);
   font-size: 15px;
 }
@@ -139,24 +151,24 @@
 
 .ficha__meta-form-acciones button {
   min-height: var(--touch-min);
-  padding: 0 var(--space-3);
-  border-radius: var(--radius);
-  font-family: var(--font-condensed);
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-base);
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
 }
 
 .ficha__meta-form-acciones button[type="submit"] {
-  background: var(--color-text);
-  color: var(--color-surface);
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
   border: none;
 }
 
 .ficha__meta-form-acciones button[type="button"] {
   background: none;
   border: 1px solid var(--color-line);
-  color: var(--color-text);
+  color: var(--color-text-secondary);
 }
 
 .ficha__links {
@@ -164,9 +176,9 @@
 }
 
 .ficha__seccion-titulo {
-  font-family: var(--font-condensed);
+  font-family: var(--font-base);
   font-weight: 600;
-  font-size: 16px;
+  font-size: 15px;
   margin: 0 0 var(--space-2);
 }
 
@@ -212,21 +224,22 @@
 
 .links__alta input {
   min-height: var(--touch-min);
-  padding: 0 var(--space-2);
+  padding: 0 var(--space-3);
+  background: var(--color-surface-sunken);
   border: 1px solid var(--color-line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   font-size: 14px;
   flex: 1 1 140px;
 }
 
 .links__alta button {
   min-height: var(--touch-min);
-  padding: 0 var(--space-3);
-  background: var(--color-text);
-  color: var(--color-surface);
+  padding: 0 var(--space-4);
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
   border: none;
-  border-radius: var(--radius);
-  font-family: var(--font-condensed);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-base);
   font-weight: 600;
   cursor: pointer;
 }
@@ -246,9 +259,9 @@
 }
 
 .slots__instrumento-nombre {
-  font-family: var(--font-condensed);
+  font-family: var(--font-base);
   font-weight: 600;
-  font-size: 15px;
+  font-size: 14px;
   margin: 0 0 var(--space-1);
 }
 
@@ -264,9 +277,9 @@
 }
 
 .slot__info {
-  font-family: var(--font-condensed);
-  font-size: 16px;
-  font-weight: 500;
+  font-family: var(--font-base);
+  font-size: 15px;
+  font-weight: 600;
 }
 
 .slot__vacio {
@@ -280,8 +293,8 @@
   font-weight: 500;
   color: var(--color-text);
   border: 1px solid var(--color-text);
-  border-radius: var(--radius);
-  padding: 1px 6px;
+  border-radius: var(--radius-pill);
+  padding: 1px 8px;
   margin-left: var(--space-2);
 }
 
@@ -306,22 +319,24 @@
 
 .slot__acciones select {
   border: 1px solid var(--color-line);
-  border-radius: var(--radius);
-  background: var(--color-surface);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-sunken);
+  padding: 0 var(--space-2);
 }
 
 .slot__acciones button {
   background: none;
-  border: none;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  padding: 0 var(--space-3);
   color: var(--color-text-secondary);
-  text-decoration: underline;
   cursor: pointer;
 }
 
 .slot__interes.slot__interes--activo {
   color: var(--color-text);
   font-weight: 600;
-  text-decoration: none;
+  border-color: var(--color-text);
 }
 
 .agregar-slot {
@@ -338,17 +353,18 @@
 
 .agregar-slot select {
   border: 1px solid var(--color-line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-sunken);
   padding: 0 var(--space-2);
 }
 
 .agregar-slot button {
-  padding: 0 var(--space-3);
-  background: var(--color-text);
-  color: var(--color-surface);
+  padding: 0 var(--space-4);
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
   border: none;
-  border-radius: var(--radius);
-  font-family: var(--font-condensed);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-base);
   font-weight: 600;
   cursor: pointer;
 }
@@ -398,9 +414,10 @@
 
 .nota-form textarea {
   min-height: 64px;
-  padding: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface-sunken);
   border: 1px solid var(--color-line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   font-family: var(--font-base);
   font-size: 15px;
   resize: vertical;
@@ -408,8 +425,10 @@
 
 .nota-form select {
   min-height: var(--touch-min);
+  padding: 0 var(--space-2);
+  background: var(--color-surface-sunken);
   border: 1px solid var(--color-line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   font-size: 14px;
 }
 
@@ -417,11 +436,11 @@
   justify-self: start;
   min-height: var(--touch-min);
   padding: 0 var(--space-4);
-  background: var(--color-text);
-  color: var(--color-surface);
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
   border: none;
-  border-radius: var(--radius);
-  font-family: var(--font-condensed);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-base);
   font-weight: 600;
   cursor: pointer;
 }

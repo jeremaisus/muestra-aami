@@ -12,42 +12,44 @@
 <body>
   <div id="navPrincipal"></div>
 
-  <header class="topbar">
-    <div class="topbar__muestras" id="muestras" role="tablist" aria-label="Muestra"></div>
-    <div class="zoom-control" id="zoomControl">
-      <button type="button" id="zoomOut" aria-label="Alejar">−</button>
-      <span id="zoomLabel"></span>
-      <button type="button" id="zoomIn" aria-label="Acercar">+</button>
-    </div>
-    <a class="topbar__exportar" id="linkExportar" href="#" target="_blank" rel="noopener">Exportar PDF</a>
-  </header>
-
-  <div class="dias" id="dias" role="tablist" aria-label="Día"></div>
-
-  <div class="filtros">
-    <select id="filtroProfesor" aria-label="Filtrar por profesor">
-      <option value="">Todos los profesores</option>
-    </select>
-    <select id="filtroInstrumento" aria-label="Filtrar por instrumento">
-      <option value="">Todos los instrumentos</option>
-    </select>
-  </div>
-
-  <p class="estado-carga" id="estadoCarga" hidden></p>
-
-  <main>
-    <!-- Mobile: columna única scrolleable del día seleccionado. -->
-    <section class="lista-mobile" id="listaMobile" aria-live="polite"></section>
-
-    <!-- iPad / desktop: tabla día × horario, ventana 14:00–21:30. -->
-    <section class="grilla-semana" id="grillaSemana" aria-hidden="true">
-      <div class="grilla-semana__encabezados" id="encabezadosDias"></div>
-      <div class="grilla-semana__cuerpo">
-        <div class="grilla-semana__horas" id="horasEje"></div>
-        <div class="grilla-semana__dias" id="columnasDias"></div>
+  <div class="panel">
+    <header class="topbar">
+      <div class="topbar__muestras" id="muestras" role="tablist" aria-label="Muestra"></div>
+      <div class="zoom-control" id="zoomControl">
+        <button type="button" id="zoomOut" aria-label="Alejar">−</button>
+        <span id="zoomLabel"></span>
+        <button type="button" id="zoomIn" aria-label="Acercar">+</button>
       </div>
-    </section>
-  </main>
+      <a class="topbar__exportar" id="linkExportar" href="#" target="_blank" rel="noopener">Exportar PDF</a>
+    </header>
+
+    <div class="dias" id="dias" role="tablist" aria-label="Día"></div>
+
+    <div class="filtros">
+      <select id="filtroProfesor" aria-label="Filtrar por profesor">
+        <option value="">Todos los profesores</option>
+      </select>
+      <select id="filtroInstrumento" aria-label="Filtrar por instrumento">
+        <option value="">Todos los instrumentos</option>
+      </select>
+    </div>
+
+    <p class="estado-carga" id="estadoCarga" hidden></p>
+
+    <main>
+      <!-- Mobile: columna única scrolleable del día seleccionado. -->
+      <section class="lista-mobile" id="listaMobile" aria-live="polite"></section>
+
+      <!-- iPad / desktop: tabla día × horario, ventana 14:00–21:30. -->
+      <section class="grilla-semana" id="grillaSemana" aria-hidden="true">
+        <div class="grilla-semana__encabezados" id="encabezadosDias"></div>
+        <div class="grilla-semana__cuerpo">
+          <div class="grilla-semana__horas" id="horasEje"></div>
+          <div class="grilla-semana__dias" id="columnasDias"></div>
+        </div>
+      </section>
+    </main>
+  </div>
 
   <dialog class="acciones-dialog" id="dialogClase"></dialog>
 

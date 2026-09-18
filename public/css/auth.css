@@ -1,13 +1,25 @@
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+}
+
 .auth {
-  max-width: 320px;
-  margin: var(--space-8) auto;
-  padding: 0 var(--space-4);
+  width: 100%;
+  max-width: 360px;
+  padding: var(--space-8) var(--space-6);
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-surface);
 }
 
 .auth h1 {
-  font-family: var(--font-condensed);
-  font-weight: 600;
-  font-size: 24px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: var(--tracking-heading);
   margin: 0 0 var(--space-6);
 }
 
@@ -25,10 +37,10 @@
 .auth__campo input {
   width: 100%;
   min-height: var(--touch-min);
-  padding: 0 var(--space-2);
-  background: var(--color-surface);
+  padding: 0 var(--space-3);
+  background: var(--color-surface-sunken);
   border: 1px solid var(--color-line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   font-family: var(--font-base);
   font-size: 16px;
   color: var(--color-text);
@@ -42,11 +54,11 @@
 .auth button[type="submit"] {
   width: 100%;
   min-height: var(--touch-min);
-  background: var(--color-text);
-  color: var(--color-surface);
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
   border: none;
-  border-radius: var(--radius);
-  font-family: var(--font-condensed);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-base);
   font-weight: 600;
   font-size: 16px;
   cursor: pointer;

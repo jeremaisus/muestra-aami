@@ -3,16 +3,19 @@
 }
 
 .seccion__titulo {
-  font-family: var(--font-condensed);
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-weight: 700;
   font-size: 18px;
+  letter-spacing: var(--tracking-heading);
   margin: 0 0 var(--space-2);
 }
 
 .seccion__contador {
+  font-family: var(--font-base);
   font-size: 14px;
   color: var(--color-text-secondary);
   font-weight: 400;
+  letter-spacing: normal;
 }
 
 .faltante {
@@ -25,9 +28,9 @@
 }
 
 .faltante__titulo {
-  font-family: var(--font-condensed);
-  font-weight: 500;
-  font-size: 17px;
+  font-family: var(--font-base);
+  font-weight: 600;
+  font-size: 16px;
 }
 
 .faltante__detalle {
@@ -41,8 +44,8 @@
   font-weight: 500;
   color: var(--color-text);
   border: 1px solid var(--color-text);
-  border-radius: var(--radius);
-  padding: 1px 6px;
+  border-radius: var(--radius-pill);
+  padding: 1px 8px;
   margin-left: var(--space-2);
 }
 

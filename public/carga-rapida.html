@@ -12,15 +12,16 @@
 <body>
   <div id="navPrincipal"></div>
 
-  <header class="topbar">
-    <div class="topbar__muestras" id="muestras" role="tablist" aria-label="Muestra"></div>
-  </header>
+  <div class="panel">
+    <header class="topbar">
+      <div class="topbar__muestras" id="muestras" role="tablist" aria-label="Muestra"></div>
+    </header>
 
-  <div class="dias" id="dias" role="tablist" aria-label="Día"></div>
+    <div class="dias" id="dias" role="tablist" aria-label="Día"></div>
 
-  <p class="estado-carga" id="estadoCarga" hidden></p>
+    <p class="estado-carga" id="estadoCarga" hidden></p>
 
-  <div class="cuerpo-carga" id="cuerpo" hidden>
+    <div class="cuerpo-carga" id="cuerpo" hidden>
     <section class="bloque-actual">
       <h1 class="bloque-actual__titulo" id="tituloBloque">Bloque nuevo</h1>
 
@@ -78,6 +79,7 @@
       <button type="button" id="botonPreview">Previsualizar</button>
       <div id="previewCsv"></div>
     </details>
+    </div>
   </div>
 
   <script src="/js/auth.js"></script>

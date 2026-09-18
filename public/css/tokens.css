@@ -1,30 +1,62 @@
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600&family=Barlow:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Color: papel de fotocopia, frío y claro. */
-  --color-bg: #F2F3F1;
+  /* Color: canvas gris frío, superficies blancas flotando encima. */
+  --color-bg: #F1F1EE;
   --color-surface: #FFFFFF;
-  --color-text: #1C1E1D;
-  --color-text-secondary: #8A908C;
-  --color-line: #DDE0DD;
+  --color-surface-sunken: #F6F6F3;
+  --color-text: #15161A;
+  --color-text-secondary: #6B6D70;
+  --color-line: #E4E4E1;
+  --color-line-strong: #D6D6D2;
 
   /* Reservados en exclusiva para estado de banda. No usar en ningún otro lugar. */
   --color-estado-incompleta: #D98324;
   --color-estado-completa: #3F8F5C;
 
-  --font-condensed: 'Barlow Condensed', sans-serif;
-  --font-base: 'Barlow', sans-serif;
+  /* Amarillo de marca: SOLO color de acción (botones primarios). Nunca
+     color de dato — los ocho colores funcionales (instrumentos + estado
+     de banda) son los únicos que identifican información. */
+  --color-accent: #E6E51E;
+  --color-accent-ink: #15161A;
+
+  /* --font-display: títulos y encabezados reales (marca, h1 de ficha,
+     nombre de pantalla). Peso alto, tracking negativo, geométrica.
+     --font-condensed / --font-base: quedan como alias históricos de la
+     versión anterior (evita reescribir cada regla de golpe) pero ahora
+     apuntan a Inter — la distinción de énfasis la sigue dando el peso
+     (600/700) que ya fija cada clase, no la familia. */
+  --font-display: 'Poppins', sans-serif;
+  --font-condensed: 'Inter', sans-serif;
+  --font-base: 'Inter', sans-serif;
+
+  --tracking-display: -0.02em;
+  --tracking-heading: -0.01em;
 
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
   --space-4: 16px;
+  --space-5: 20px;
   --space-6: 24px;
   --space-8: 32px;
+  --space-10: 40px;
 
   --touch-min: 44px;
   --bar-width: 3px;
-  --radius: 2px;
+
+  /* Radios generosos y píldoras, escalados para una herramienta densa
+     (no una landing): nada de 30-40px acá. */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-pill: 999px;
+  /* Alias histórico (antes 2px, look "planilla" plano): las pantallas que
+     todavía no pasaron por el rediseño lo siguen usando tal cual. */
+  --radius: var(--radius-sm);
+
+  /* Una sola sombra, sutil, sin apilar capas. Se usa con moderación: nav,
+     panel principal, diálogos — no en cada fila de una lista. */
+  --shadow-surface: 0 4px 16px rgba(21, 22, 26, 0.08);
 }
 
 * {

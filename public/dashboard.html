@@ -12,27 +12,29 @@
 <body>
   <div id="navPrincipal"></div>
 
-  <header class="topbar">
-    <div class="topbar__muestras" id="muestras" role="tablist" aria-label="Muestra"></div>
-  </header>
+  <div class="panel">
+    <header class="topbar">
+      <div class="topbar__muestras" id="muestras" role="tablist" aria-label="Muestra"></div>
+    </header>
 
-  <p class="estado-carga" id="estadoCarga" hidden></p>
+    <p class="estado-carga" id="estadoCarga" hidden></p>
 
-  <main>
-    <section class="seccion">
-      <h1 class="seccion__titulo">
-        Instrumentos que faltan <span class="seccion__contador" id="contadorFaltantes"></span>
-      </h1>
-      <div id="listaFaltantes"></div>
-    </section>
+    <main>
+      <section class="seccion">
+        <h1 class="seccion__titulo">
+          Instrumentos que faltan <span class="seccion__contador" id="contadorFaltantes"></span>
+        </h1>
+        <div id="listaFaltantes"></div>
+      </section>
 
-    <section class="seccion">
-      <h2 class="seccion__titulo">
-        Alumnos sin canción asignada <span class="seccion__contador" id="contadorSinAsignar"></span>
-      </h2>
-      <div id="listaSinAsignar"></div>
-    </section>
-  </main>
+      <section class="seccion">
+        <h2 class="seccion__titulo">
+          Alumnos sin canción asignada <span class="seccion__contador" id="contadorSinAsignar"></span>
+        </h2>
+        <div id="listaSinAsignar"></div>
+      </section>
+    </main>
+  </div>
 
   <script src="/js/auth.js"></script>
   <script src="/js/nav.js"></script>

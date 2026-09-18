@@ -1,33 +1,74 @@
 /* ---------------------------------------------------------------
    Grilla semanal — pantalla #2. Mobile-first: columna única
    scrolleable por día. Desde 768px: tabla día × horario.
+
+   Toda la pantalla (topbar, filtros, contenido) vive dentro de un único
+   panel flotante (`.panel`, ver más abajo) — una sola superficie blanca
+   con una sola sombra, como pide el sistema nuevo. Puertas adentro del
+   panel la densidad se mantiene: líneas de 1px, sin tarjeta por fila.
    ---------------------------------------------------------------- */
+
+.panel {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-surface);
+  margin: 0 var(--space-2) var(--space-2);
+}
 
 .topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
-  background: var(--color-surface);
   border-bottom: 1px solid var(--color-line);
   padding: var(--space-2) var(--space-4);
 }
 
 .topbar__muestras {
   display: flex;
-  gap: var(--space-4);
+  gap: var(--space-1);
   overflow-x: auto;
+}
+
+.topbar__muestras button {
+  appearance: none;
+  background: none;
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 0 var(--space-3);
+  min-height: var(--touch-min);
+  font-family: var(--font-base);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.topbar__muestras button[aria-selected="true"] {
+  background: var(--color-text);
+  color: var(--color-surface);
+  font-weight: 600;
 }
 
 .topbar__exportar {
   flex-shrink: 0;
-  min-height: var(--touch-min);
+  min-height: 36px;
   display: flex;
   align-items: center;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-pill);
   font-family: var(--font-base);
-  font-size: 14px;
+  font-weight: 500;
+  font-size: 13px;
   color: var(--color-text-secondary);
-  text-decoration: underline;
+  text-decoration: none;
+}
+
+.topbar__exportar:hover {
+  border-color: var(--color-text-secondary);
+  color: var(--color-text);
 }
 
 /* Solo tiene sentido junto a la tabla de horario (desktop/iPad): la lista
@@ -36,54 +77,36 @@
   display: none;
 }
 
-.topbar__muestras button {
-  appearance: none;
-  background: none;
-  border: none;
-  border-bottom: 2px solid transparent;
-  padding: var(--space-2) 0;
-  min-height: var(--touch-min);
-  font-family: var(--font-condensed);
-  font-weight: 600;
-  font-size: 18px;
-  color: var(--color-text-secondary);
-  cursor: pointer;
-}
-
-.topbar__muestras button[aria-selected="true"] {
-  color: var(--color-text);
-  border-bottom-color: var(--color-text);
-}
-
 /* Selector de día: solo mobile, columna única. En desktop/iPad los días
    ya son las columnas de la tabla, así que este filtro se oculta. */
 .dias {
   display: flex;
-  gap: var(--space-2);
+  gap: var(--space-1);
   overflow-x: auto;
-  background: var(--color-surface);
   border-bottom: 1px solid var(--color-line);
-  padding: 0 var(--space-4);
+  padding: var(--space-2) var(--space-4);
 }
 
 .dias button {
   appearance: none;
   background: none;
   border: none;
-  border-bottom: 2px solid transparent;
+  border-radius: var(--radius-pill);
   min-width: var(--touch-min);
   min-height: var(--touch-min);
-  font-family: var(--font-condensed);
+  padding: 0 var(--space-3);
+  font-family: var(--font-base);
   font-weight: 500;
-  font-size: 16px;
+  font-size: 14px;
   color: var(--color-text-secondary);
   cursor: pointer;
   flex-shrink: 0;
 }
 
 .dias button[aria-selected="true"] {
-  color: var(--color-text);
-  border-bottom-color: var(--color-text);
+  background: var(--color-text);
+  color: var(--color-surface);
+  font-weight: 600;
 }
 
 .filtros {
@@ -91,21 +114,23 @@
   flex-wrap: wrap;
   gap: var(--space-2);
   padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-line);
 }
 
 .filtros select {
   min-height: var(--touch-min);
-  padding: 0 var(--space-2);
-  background: var(--color-surface);
+  padding: 0 var(--space-3);
+  background: var(--color-surface-sunken);
   border: 1px solid var(--color-line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-base);
   font-size: 14px;
   color: var(--color-text);
 }
 
 .estado-carga {
   margin: 0;
-  padding: 0 var(--space-4) var(--space-3);
+  padding: var(--space-3) var(--space-4);
   font-size: 14px;
   color: var(--color-text-secondary);
 }
@@ -123,12 +148,13 @@
 }
 
 .bloque:hover {
-  background: var(--color-surface);
+  background: var(--color-surface-sunken);
 }
 
 .bloque__hora {
-  font-family: var(--font-condensed);
-  font-size: 13px;
+  font-family: var(--font-base);
+  font-weight: 600;
+  font-size: 12px;
   color: var(--color-text-secondary);
   margin: 0 0 var(--space-1);
 }
@@ -143,9 +169,9 @@
 }
 
 .bloque__alumno-nombre {
-  font-family: var(--font-condensed);
-  font-weight: 500;
-  font-size: 17px;
+  font-family: var(--font-base);
+  font-weight: 600;
+  font-size: 16px;
 }
 
 .bloque__alumno-instrumento {
@@ -155,7 +181,7 @@
 
 .bloque__profesor {
   padding-left: calc(var(--bar-width) + var(--space-2));
-  font-size: 14px;
+  font-size: 13px;
   color: var(--color-text-secondary);
 }
 
@@ -182,7 +208,7 @@
 
   .grilla-semana {
     display: block;
-    padding: 0 var(--space-4) var(--space-6);
+    padding: 0 var(--space-2) var(--space-2);
   }
 
   .zoom-control {
@@ -195,10 +221,10 @@
   .zoom-control button {
     min-width: var(--touch-min);
     min-height: var(--touch-min);
-    background: none;
+    background: var(--color-surface-sunken);
     border: 1px solid var(--color-line);
-    border-radius: var(--radius);
-    font-family: var(--font-condensed);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-base);
     font-size: 18px;
     font-weight: 600;
     color: var(--color-text);
@@ -222,14 +248,15 @@
     grid-template-columns: 56px repeat(6, 1fr);
     position: sticky;
     top: 0;
-    background: var(--color-bg);
+    background: var(--color-surface);
     z-index: 1;
   }
 
   .grilla-semana__encabezados > span {
-    font-family: var(--font-condensed);
+    font-family: var(--font-base);
     font-weight: 600;
-    font-size: 15px;
+    font-size: 13px;
+    color: var(--color-text-secondary);
     padding: var(--space-2) var(--space-2);
     border-bottom: 1px solid var(--color-line);
   }
@@ -249,7 +276,8 @@
     left: 0;
     right: var(--space-2);
     transform: translateY(-0.6em);
-    font-family: var(--font-condensed);
+    font-family: var(--font-base);
+    font-weight: 500;
     font-size: 12px;
     color: var(--color-text-secondary);
     text-align: right;
@@ -274,23 +302,30 @@
     border-top: 1px solid var(--color-line);
   }
 
+  /* Cada bloque de clase es un "chip" de evento: fondo con un lavado muy
+     sutil del color de instrumento (12%) + la barra sólida de siempre a la
+     izquierda, que sigue siendo el dato fuerte. El lavado es identidad
+     nueva, la barra es la que nunca se toca. */
   .clase-bloque {
     position: absolute;
     left: var(--space-1);
     right: var(--space-1);
     padding: var(--space-1) var(--space-2);
-    background: var(--color-surface);
+    background: color-mix(in srgb, var(--instrumento-color, var(--color-line)) 12%, white);
+    border-radius: var(--radius-sm);
     overflow: hidden;
     cursor: pointer;
+    transition: box-shadow 0.15s ease;
   }
 
   .clase-bloque:hover {
-    outline: 1px solid var(--color-text-secondary);
+    box-shadow: 0 0 0 1.5px var(--instrumento-color, var(--color-text-secondary));
   }
 
   .clase-bloque__hora {
-    font-family: var(--font-condensed);
-    font-size: 12px;
+    font-family: var(--font-base);
+    font-weight: 600;
+    font-size: 11px;
     color: var(--color-text-secondary);
     margin: 0 0 2px;
   }
@@ -298,10 +333,10 @@
   .clase-bloque__alumno {
     padding-left: var(--space-2);
     border-left: var(--bar-width) solid var(--instrumento-color, var(--color-line));
-    font-family: var(--font-condensed);
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 1.25;
+    font-family: var(--font-base);
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 1.3;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -310,7 +345,7 @@
 
   .clase-bloque__profesor {
     padding-left: var(--space-2);
-    font-size: 12px;
+    font-size: 11px;
     color: var(--color-text-secondary);
     white-space: nowrap;
     overflow: hidden;

@@ -1,16 +1,21 @@
 /* Compartido por las pantallas de administración: Profesores, Accesos,
-   Configuración. Mismo lenguaje visual que el resto (sin cards, barra de
-   1px como separador, jerarquía por peso tipográfico). */
+   Configuración. Panel flotante como el resto de la app; puertas adentro,
+   densidad de lista con línea de 1px como separador. */
 
 .admin {
-  padding: var(--space-4);
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-surface);
+  margin: 0 var(--space-2) var(--space-2);
+  padding: var(--space-4) var(--space-5);
   max-width: 720px;
 }
 
 .admin__titulo {
-  font-family: var(--font-condensed);
-  font-weight: 600;
-  font-size: 22px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: var(--tracking-heading);
   margin: 0 0 var(--space-4);
 }
 
@@ -39,10 +44,10 @@
 .admin-alta__campo input,
 .admin-alta__campo select {
   min-height: var(--touch-min);
-  padding: 0 var(--space-2);
-  background: var(--color-surface);
+  padding: 0 var(--space-3);
+  background: var(--color-surface-sunken);
   border: 1px solid var(--color-line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   font-family: var(--font-base);
   font-size: 15px;
 }
@@ -50,11 +55,11 @@
 .admin-alta button {
   min-height: var(--touch-min);
   padding: 0 var(--space-4);
-  background: var(--color-text);
-  color: var(--color-surface);
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
   border: none;
-  border-radius: var(--radius);
-  font-family: var(--font-condensed);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-base);
   font-weight: 600;
   font-size: 15px;
   cursor: pointer;
@@ -94,9 +99,9 @@
 }
 
 .admin-fila__nombre {
-  font-family: var(--font-condensed);
-  font-weight: 500;
-  font-size: 17px;
+  font-family: var(--font-base);
+  font-weight: 600;
+  font-size: 16px;
 }
 
 .admin-fila__meta {
@@ -110,8 +115,8 @@
   font-weight: 500;
   border: 1px solid var(--color-text-secondary);
   color: var(--color-text-secondary);
-  border-radius: var(--radius);
-  padding: 1px 6px;
+  border-radius: var(--radius-pill);
+  padding: 1px 8px;
   margin-left: var(--space-2);
 }
 
@@ -125,27 +130,36 @@
 .admin-fila__edicion input {
   flex: 1;
   min-height: var(--touch-min);
-  padding: 0 var(--space-2);
+  padding: 0 var(--space-3);
+  background: var(--color-surface-sunken);
   border: 1px solid var(--color-line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   font-family: var(--font-base);
   font-size: 15px;
 }
 
 .admin-fila__acciones {
   display: flex;
-  gap: var(--space-3);
+  gap: var(--space-1);
   flex-shrink: 0;
 }
 
 .admin-fila__acciones button {
   background: none;
-  border: none;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  padding: 0 var(--space-3);
   color: var(--color-text-secondary);
-  text-decoration: underline;
+  font-family: var(--font-base);
+  font-weight: 500;
   font-size: 13px;
   cursor: pointer;
   min-height: var(--touch-min);
+}
+
+.admin-fila__acciones button:hover {
+  border-color: var(--color-text-secondary);
+  color: var(--color-text);
 }
 
 .admin-vacio {
@@ -169,9 +183,9 @@
 }
 
 .config-item__nombre {
-  font-family: var(--font-condensed);
+  font-family: var(--font-base);
   font-weight: 600;
-  font-size: 17px;
+  font-size: 16px;
 }
 
 .config-item__explicacion {
@@ -201,10 +215,11 @@
   width: 44px;
   height: 28px;
   border: 1px solid var(--color-line);
-  border-radius: var(--radius);
-  background: var(--color-bg);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-sunken);
   position: relative;
   pointer-events: none;
+  transition: background 150ms ease, border-color 150ms ease;
 }
 
 .config-switch__perilla {
@@ -214,13 +229,18 @@
   width: 22px;
   height: 22px;
   background: var(--color-text-secondary);
-  border-radius: 1px;
+  border-radius: var(--radius-pill);
   transition: transform 150ms ease, background 150ms ease;
+}
+
+.config-switch input:checked + .config-switch__pista {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
 }
 
 .config-switch input:checked + .config-switch__pista .config-switch__perilla {
   transform: translateX(16px);
-  background: var(--color-text);
+  background: var(--color-accent-ink);
 }
 
 .config-switch input:focus-visible + .config-switch__pista {
@@ -247,21 +267,22 @@
 .config-drive__campo input {
   flex: 1;
   min-height: var(--touch-min);
-  padding: 0 var(--space-2);
+  padding: 0 var(--space-3);
+  background: var(--color-surface-sunken);
   border: 1px solid var(--color-line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   font-family: var(--font-base);
   font-size: 15px;
 }
 
 .config-drive__campo button {
   min-height: var(--touch-min);
-  padding: 0 var(--space-3);
-  background: var(--color-text);
-  color: var(--color-surface);
+  padding: 0 var(--space-4);
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
   border: none;
-  border-radius: var(--radius);
-  font-family: var(--font-condensed);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-base);
   font-weight: 600;
   cursor: pointer;
 }

@@ -13,14 +13,16 @@
 <body>
   <div id="navPrincipal"></div>
 
-  <header class="topbar">
-    <div class="topbar__muestras" id="muestras" role="tablist" aria-label="Muestra"></div>
-    <a class="topbar__exportar" id="linkExportar" href="#" target="_blank" rel="noopener">Exportar PDF</a>
-  </header>
+  <div class="panel">
+    <header class="topbar">
+      <div class="topbar__muestras" id="muestras" role="tablist" aria-label="Muestra"></div>
+      <a class="topbar__exportar" id="linkExportar" href="#" target="_blank" rel="noopener">Exportar PDF</a>
+    </header>
 
-  <p class="estado-carga" id="estadoCarga" hidden></p>
+    <p class="estado-carga" id="estadoCarga" hidden></p>
 
-  <main class="programa" id="programa" aria-live="polite"></main>
+    <main class="programa" id="programa" aria-live="polite"></main>
+  </div>
 
   <script src="/js/auth.js"></script>
   <script src="/js/nav.js"></script>

@@ -1,25 +1,32 @@
+/* Barra flotante: superficie blanca sobre el canvas gris, radio generoso,
+   una sola sombra sutil. Es el elemento "Aaply" más visible de la app, así
+   que aparece en todas las pantallas aunque el resto no se haya rediseñado
+   todavía. */
 .nav-principal {
   display: flex;
   align-items: center;
   gap: var(--space-4);
   background: var(--color-surface);
-  border-bottom: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-surface);
+  margin: var(--space-2);
   padding: 0 var(--space-4);
   overflow-x: auto;
 }
 
 .nav-principal__marca {
-  font-family: var(--font-condensed);
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-weight: 700;
   font-size: 16px;
-  padding: var(--space-2) 0;
+  letter-spacing: var(--tracking-heading);
+  padding: var(--space-3) 0;
   white-space: nowrap;
   flex-shrink: 0;
 }
 
 .nav-principal__links {
   display: flex;
-  gap: var(--space-3);
+  gap: var(--space-1);
   flex-shrink: 0;
 }
 
@@ -27,20 +34,21 @@
   display: flex;
   align-items: center;
   min-height: var(--touch-min);
-  padding: 0 var(--space-1);
-  font-family: var(--font-condensed);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-base);
   font-weight: 500;
-  font-size: 15px;
+  font-size: 14px;
   color: var(--color-text-secondary);
   text-decoration: none;
-  border-bottom: 2px solid transparent;
   white-space: nowrap;
   flex-shrink: 0;
 }
 
 .nav-principal__links a[aria-current="page"] {
+  background: var(--color-bg);
   color: var(--color-text);
-  border-bottom-color: var(--color-text);
+  font-weight: 600;
 }
 
 .nav-principal__usuario {
@@ -48,6 +56,8 @@
   align-items: center;
   gap: var(--space-3);
   flex-shrink: 0;
+  margin-left: auto;
+  padding-left: var(--space-3);
 }
 
 .nav-principal__etiqueta {
@@ -59,13 +69,19 @@
 .nav-principal__salir {
   appearance: none;
   background: none;
-  border: none;
-  min-height: var(--touch-min);
-  padding: 0;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  min-height: 36px;
+  padding: 0 var(--space-3);
   font-family: var(--font-base);
-  font-size: 14px;
+  font-weight: 500;
+  font-size: 13px;
   color: var(--color-text-secondary);
-  text-decoration: underline;
   cursor: pointer;
   white-space: nowrap;
+}
+
+.nav-principal__salir:hover {
+  border-color: var(--color-text-secondary);
+  color: var(--color-text);
 }

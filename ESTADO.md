@@ -239,54 +239,123 @@ columna por día con selector arriba, no una tabla encogida.
 
 ## Dirección visual
 
-El material de referencia no es un dashboard: es la **hoja de ruta de escenario**
-y la planilla de ensayo. Denso, legible a un metro de distancia, sin decoración.
-Lo memorable es una sola cosa: el color de instrumento como barra de canal.
+**Vigente desde:** 2026-09-18. Reemplaza por completo el brief anterior
+("hoja de ruta de escenario", Barlow Condensed, radio 2px, prohibido
+sombras/tarjetas) — quedó incompatible con la referencia nueva y no
+conviven las dos direcciones.
 
-### Brief para el skill de diseño
+**Referencia:** `design/AAPLY.md`, un sistema de diseño extraído de un
+producto real (Aaply). No se copió tal cual — es una landing comercial de
+57px de display, secciones separadas por 80-120px y mockups decorativos —
+se tomó el carácter (canvas gris con superficies blancas flotando, radios
+generosos, píldoras, una sombra sutil, tipografía con peso y tracking
+negativo, amarillo como energía de marca) y se lo reescaló para una
+herramienta interna densa que se usa desde el celular entre clase y clase.
 
-Pegar esto tal cual antes de generar el primer componente:
+### Regla innegociable: los ocho colores funcionales
 
-> Escuela de música en Bariloche, muestra de fin de año. La usan ocho profesores
-> desde el celular entre clase y clase, y una persona de administración desde un
-> iPad. El trabajo de la interfaz es que se vea de un vistazo quién toca qué, a
-> qué hora, y qué instrumento falta en cada banda.
->
-> Referencia visual: planilla de ensayo y hoja de escenario, no panel de analytics.
-> Densidad alta, jerarquía por peso tipográfico y no por tarjetas.
->
-> **Color.** Base neutra fría y clara (papel de fotocopia, no crema cálido):
-> `#F2F3F1` fondo, `#FFFFFF` superficies, `#1C1E1D` texto, `#8A908C` texto
-> secundario, `#DDE0DD` líneas. Los únicos acentos son los seis colores de
-> instrumento, ya definidos en la base de datos. Naranja `#D98324` y verde
-> `#3F8F5C` quedan reservados en exclusiva para el estado de banda: no aparecen
-> en ningún otro lugar de la interfaz.
->
-> **Tipografía.** Barlow Condensed para nombres, horarios y encabezados de grilla
-> — la condensada es funcional acá, entra más dato por línea y remite al cartel de
-> escenario. Barlow normal para texto corrido y notas. Nada de Inter. Nada de
-> mayúsculas sostenidas en etiquetas. Nada de monoespaciada para datos chicos.
->
-> **Estructura.** Cada alumno, slot y bloque horario lleva una barra vertical de
-> 3px con el color de su instrumento sobre el borde izquierdo. Eso reemplaza a
-> íconos, badges y rellenos de color. Sin sombras. Radio de borde 2px o ninguno.
-> Separación por líneas de 1px y espacio en blanco, no por contenedores.
->
-> **Prohibido:** tarjetas redondeadas idénticas, gradientes, etiquetas en
-> mayúsculas sobre cada título, flechas `→` en los botones, cadenas con puntos
-> medios, animaciones de entrada por sección.
->
-> **Movimiento:** solo como respuesta a una acción del usuario — abrir el panel de
-> notas, confirmar una asignación, mostrar el aviso de instrumento duplicado.
+El color no es decoración en esta app, es información:
 
-### Cómo trabajarlo con el skill
+- Los **seis colores de instrumento** identifican qué toca cada alumno y
+  permiten detectar coincidencias de un vistazo (`muestra_instrumentos`).
+  No se tocaron: siguen siendo los mismos seis valores, porque el contraste
+  contra las superficies blancas no cambió (el canvas nuevo es casi
+  idéntico en luminosidad al anterior) y ya eran claramente distinguibles
+  entre sí.
+- **Naranja** `#D98324` (incompleta) y **verde** `#3F8F5C` (completa) para
+  estado de banda. Sin cambios, siguen reservados en exclusiva.
+- El **amarillo de marca** (`#E6E51E`, tomado de la referencia) es color de
+  **acción únicamente** — botones primarios, nunca dato. No compite con los
+  instrumentos porque nunca aparece donde aparece un instrumento.
+- Se **descartó** el durazno de la referencia (`#FF8562`): se confunde con
+  el naranja de "incompleta".
 
-- Pedir **primero el plan de diseño** (tokens de color, tipografía, wireframe en
-  ASCII de la grilla en 380px y en iPad) y revisarlo antes de que escriba código.
-- Después, **un componente por vez**, en este orden: grilla semanal → ficha de
-  canción con slots → panel de notas → formulario de carga rápida → dashboard de
-  faltantes.
-- Revisar cada uno en el ancho real antes de seguir con el siguiente.
+### Tokens (`public/css/tokens.css`)
+
+**Color**
+| Token | Valor | Uso |
+|---|---|---|
+| `--color-bg` | `#F1F1EE` | Canvas — el gris frío donde flotan las superficies |
+| `--color-surface` | `#FFFFFF` | Paneles, nav, diálogos |
+| `--color-surface-sunken` | `#F6F6F3` | Inputs y selects — un pelo "hundidos" respecto al panel |
+| `--color-text` | `#15161A` | Texto principal |
+| `--color-text-secondary` | `#6B6D70` | Texto secundario — más contraste que el valor anterior (`#8A908C`) |
+| `--color-line` | `#E4E4E1` | Líneas de 1px, todavía la separación primaria dentro de un panel |
+| `--color-accent` / `--color-accent-ink` | `#E6E51E` / `#15161A` | Acción — ver regla de arriba |
+| `--color-estado-incompleta` / `--color-estado-completa` | `#D98324` / `#3F8F5C` | Sin cambios |
+
+**Tipografía** — `--font-display` (Poppins 700, tracking -0.02em) para
+títulos reales: marca de nav, h1 de ficha, nombre de pantalla. Todo lo
+demás — nombres en listas, horarios, botones, labels — usa Inter, con el
+énfasis dado por el *peso* (600 para nombres/botones, 500 para labels, 400
+para texto corrido) en vez de por la familia. Se dejaron los tokens
+`--font-condensed`/`--font-base` como alias históricos apuntando a Inter,
+para no tener que tocar cada regla de golpe durante la propagación —
+la distinción de "esto es un nombre" contra "esto es meta" la sigue dando
+el peso, como antes.
+
+Se migró de Barlow Condensed a Inter: la condensada ganaba línea por ancho
+angosto, pero el carácter nuevo (geométrico, con peso) pide una familia
+distinta. En mobile esto puede envolver nombres largos a dos líneas más
+seguido que antes — es el costo aceptado del cambio de identidad, no un
+bug.
+
+**Radio y sombra** — generoso pero escalado para una herramienta, no una
+landing: `--radius-sm` 8px (inputs, chips), `--radius-md` 14px (paneles,
+diálogos), `--radius-pill` 999px (botones, tags, tabs). Una sola sombra,
+`--shadow-surface`, sutil y sin apilar capas — se usa con moderación: nav,
+el panel principal de cada pantalla, diálogos. Nunca en cada fila de una
+lista.
+
+**Espaciado** — misma escala de antes (4/8/12/16/24/32) más `--space-5`
+(20px) y `--space-10` (40px) para el aire de formularios/catálogos. La
+grilla semanal no lo usa: ahí la densidad sigue siendo la prioridad, el
+aire se aplicó al panel que la contiene (margen, radio, sombra), no a las
+filas de adentro.
+
+### Cómo se ve esto en una pantalla
+
+Cada pantalla es, puertas afuera, un panel blanco flotando sobre el canvas
+gris (radio + sombra únicos, sin apilar), con el nav como una barra
+flotante aparte arriba. Puertas adentro del panel, la densidad de antes se
+mantiene: líneas de 1px separan secciones, no hay una tarjeta por fila. Las
+pestañas (muestra, día) pasaron de subrayado a píldora — rellena y oscura
+cuando están seleccionadas, fantasma cuando no —, tomando el lenguaje de
+"Filled Black Pill" / "Ghost Pill" de la referencia para un uso funcional
+(selección), no decorativo. En la grilla de escritorio, cada bloque de
+clase es un chip con radio pequeño y un lavado sutil (12%) del color de
+instrumento de fondo — la barra sólida de 3px sigue siendo el dato fuerte,
+el lavado es identidad nueva encima.
+
+### Estado del rollout
+
+- [x] **Propagado a las 14 pantallas.** Se armó primero sobre la grilla
+  semanal (la más difícil) para validar el lenguaje antes de tocar el
+  resto; una vez aprobada, se aplicó igual a todas: login/cambiar
+  contraseña, grilla, canciones, ficha de canción, alumnos, carga rápida,
+  asignar horarios, dashboard, programa, profesores, accesos y
+  configuración.
+- Cada pantalla quedó con su contenido dentro de un panel flotante
+  (`.panel`, o `.ficha`/`.admin`/`.auth` donde ya existía un contenedor
+  propio) — blanco, radio 14px, la sombra única. El login usa el mismo
+  patrón como tarjeta centrada sobre el canvas, que es donde más natural
+  cae.
+- Ya no queda ningún uso de los alias de transición: todo `var(--radius)`
+  se reemplazó por `--radius-sm` (inputs/chips) o `--radius-pill`
+  (botones/tags/tabs) explícito, y todo `var(--font-condensed)` por
+  `--font-base`/`--font-display` explícito, pantalla por pantalla.
+- El amarillo de acción quedó en los botones que de verdad confirman algo:
+  "Agregar canción", "Guardar" de la ficha, "Agregar alumno" de carga
+  rápida, "Confirmar" de asignar horarios, "Crear acceso/profesor",
+  "Entrar", el interruptor encendido de Configuración. Los botones
+  secundarios (Cancelar, Quitar, Borrar) quedaron en píldora fantasma —
+  borde, sin relleno.
+- `asignar-horarios.html` tenía un bug preexistente (no relacionado con el
+  rediseño): usaba la clase `catalogo__vacio` para el estado vacío pero
+  esa pantalla nunca cargó `canciones.css`, así que ese texto no tenía
+  estilo. Se aprovechó el paso por el archivo para agregarla directo a
+  `asignar-horarios.css` en vez de sumar una hoja de estilos completa por
+  una sola regla.
 
 ---
 

@@ -14,25 +14,27 @@
 <body>
   <div id="navPrincipal"></div>
 
-  <header class="topbar">
-    <div class="topbar__muestras" id="muestras" role="tablist" aria-label="Muestra"></div>
-  </header>
+  <div class="panel">
+    <header class="topbar">
+      <div class="topbar__muestras" id="muestras" role="tablist" aria-label="Muestra"></div>
+    </header>
 
-  <div class="alumnos__filtros">
-    <label class="alumnos__toggle">
-      <input type="checkbox" id="soloSinCancion" />
-      Solo sin canción asignada
-    </label>
-    <label class="alumnos__toggle">
-      <input type="checkbox" id="soloSinInstrumento" />
-      Solo sin instrumento asignado
-    </label>
-    <span class="alumnos__contador" id="contador"></span>
+    <div class="alumnos__filtros">
+      <label class="alumnos__toggle">
+        <input type="checkbox" id="soloSinCancion" />
+        Solo sin canción asignada
+      </label>
+      <label class="alumnos__toggle">
+        <input type="checkbox" id="soloSinInstrumento" />
+        Solo sin instrumento asignado
+      </label>
+      <span class="alumnos__contador" id="contador"></span>
+    </div>
+
+    <p class="estado-carga" id="estadoCarga" hidden></p>
+
+    <main id="lista" aria-live="polite"></main>
   </div>
-
-  <p class="estado-carga" id="estadoCarga" hidden></p>
-
-  <main id="lista" aria-live="polite"></main>
 
   <dialog class="acciones-dialog" id="accionesDialog"></dialog>
 

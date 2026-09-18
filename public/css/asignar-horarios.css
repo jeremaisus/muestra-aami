@@ -1,14 +1,18 @@
 .estado-carga {
   margin: 0;
-  padding: 0 var(--space-4) var(--space-3);
+  padding: var(--space-3) var(--space-4);
   font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.catalogo__vacio {
+  padding: var(--space-6) var(--space-4);
   color: var(--color-text-secondary);
 }
 
 .cerrado-aviso {
   margin: 0;
   padding: var(--space-2) var(--space-4);
-  background: var(--color-surface);
   border-bottom: 1px solid var(--color-line);
   font-size: 14px;
   color: var(--color-text-secondary);
@@ -37,12 +41,12 @@
 .asignar__campo select,
 .asignar__campo input {
   min-height: var(--touch-min);
-  padding: 0 var(--space-2);
+  padding: 0 var(--space-3);
   border: 1px solid var(--color-line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   font-family: var(--font-base);
   font-size: 16px;
-  background: var(--color-surface);
+  background: var(--color-surface-sunken);
 }
 
 .asignar__campo--buscar {
@@ -62,15 +66,15 @@
   font-weight: 500;
   border: 1px solid var(--color-text-secondary);
   color: var(--color-text-secondary);
-  border-radius: var(--radius);
-  padding: 1px 6px;
+  border-radius: var(--radius-pill);
+  padding: 1px 8px;
   margin-left: var(--space-2);
 }
 
 .asignar-panel {
   padding: var(--space-3) var(--space-4);
   border-bottom: 1px solid var(--color-line);
-  background: var(--color-bg);
+  background: var(--color-surface-sunken);
 }
 
 .asignar-panel__fila {
@@ -92,10 +96,10 @@
   min-height: var(--touch-min);
   background: var(--color-surface);
   border: 1px solid var(--color-line);
-  border-radius: var(--radius);
-  font-family: var(--font-condensed);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-base);
   font-weight: 500;
-  font-size: 15px;
+  font-size: 14px;
   color: var(--color-text-secondary);
   cursor: pointer;
 }
@@ -104,6 +108,7 @@
   color: var(--color-surface);
   background: var(--color-text);
   border-color: var(--color-text);
+  font-weight: 600;
 }
 
 .asignar-panel__campo {
@@ -119,9 +124,9 @@
 
 .asignar-panel__campo select {
   min-height: var(--touch-min);
-  padding: 0 var(--space-2);
+  padding: 0 var(--space-3);
   border: 1px solid var(--color-line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   font-family: var(--font-base);
   font-size: 16px;
   background: var(--color-surface);
@@ -141,15 +146,17 @@
   font-size: 14px;
 }
 
+/* Botón de confirmación: amarillo de marca, es el gesto que cierra cada
+   una de las 120+ asignaciones. */
 .asignar-panel__coincide button,
 .asignar-panel__duracion button {
   min-height: var(--touch-min);
-  padding: 0 var(--space-3);
-  background: var(--color-text);
-  color: var(--color-surface);
+  padding: 0 var(--space-4);
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
   border: none;
-  border-radius: var(--radius);
-  font-family: var(--font-condensed);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-base);
   font-weight: 600;
   font-size: 15px;
   cursor: pointer;
